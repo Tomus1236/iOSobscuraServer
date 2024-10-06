@@ -1,2 +1,4 @@
 # iOSobscuraServer
-Search the iOS Obscura database!
+iOS Obscura search engine, effectively.<br>
+https://archive.org/details/iOSObscura<br>
+Very WIP atm.
