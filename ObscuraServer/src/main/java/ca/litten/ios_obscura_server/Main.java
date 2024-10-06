@@ -41,7 +41,7 @@ public class Main {
                     url += escaper.escape(frag) + "/";
                 }
                 url = url.substring(0, url.length() - 1);
-                if (url.contains("PossiblyBroken"))
+                if (url.contains("PossiblyBroken") || url.contains("Homebrew%20IPAs"))
                     continue;
                 if (AppList.appUrlAlreadyExists(url)) {
                     System.out.println("Skipped: " + url);
