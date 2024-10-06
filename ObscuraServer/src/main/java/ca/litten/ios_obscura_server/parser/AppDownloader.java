@@ -30,7 +30,7 @@ public class AppDownloader {
             String bundleID = "";
             String version = "0.0";
             String minimumVersion = "0.0";
-            String artwork = "";
+            String artwork = null;
             String developer = null;
             ZipInputStream zipExtractor = new ZipInputStream(connection.getInputStream());
             ZipEntry entry = zipExtractor.getNextEntry();
@@ -86,8 +86,11 @@ public class AppDownloader {
                                 if (str.equals("null")) break;
                                 appName = str;
                             }
-                            case "softwareIcon57x57URL":
-                                artwork = String.valueOf(parsedData.get("softwareIcon57x57URL"));
+                            case "softwareIcon57x57URL":{
+                                String str = String.valueOf(parsedData.get("softwareIcon57x57URL"));
+                                if (str.equals("null")) break;
+                                artwork = str;
+                            }
                             case "artistName":{
                                 String str = String.valueOf(parsedData.get("artistName"));
                                 if (str.equals("null")) break;

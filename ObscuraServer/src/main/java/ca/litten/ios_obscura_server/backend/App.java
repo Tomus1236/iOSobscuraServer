@@ -90,6 +90,7 @@ public class App {
     }
     
     public void updateArtwork(String version, String url) {
+        if (url == null) return;
         if (isVersionLater(version, earliestArtVersion)) {
             earliestArtVersion = version;
             artworkURL = url;
