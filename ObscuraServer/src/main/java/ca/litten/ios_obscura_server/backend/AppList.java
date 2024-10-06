@@ -60,11 +60,11 @@ public class AppList {
     }
     
     public static List<App> listAppsThatSupportVersion(String version) {
-        return apps.stream().filter(app -> app.showAppForVersion(version)).collect(Collectors.toList());
+        return apps.parallelStream().filter(app -> app.showAppForVersion(version)).collect(Collectors.toList());
     }
     
     public static App getAppByBundleID(String bundleID) {
-        List<App> theApp = apps.stream().filter(app -> (app.getBundleID().equals(bundleID))).collect(Collectors.toList());
+        List<App> theApp = apps.parallelStream().filter(app -> (app.getBundleID().equals(bundleID))).collect(Collectors.toList());
         if (theApp.isEmpty()) return null;
         return theApp.get(0);
     }
@@ -76,13 +76,13 @@ public class AppList {
     }
     
     public static List<App> searchApps(String query, String version) {
-        return apps.stream()
+        return apps.parallelStream()
                 .filter(app -> (app.showAppForVersion(version) && app.getName().contains(query)))
                 .sorted(Comparator.comparingInt(o -> o.getName().length())).collect(Collectors.toList());
     }
     
     public static List<App> searchApps(String query) {
-        return apps.stream().filter(app -> app.getName().contains(query))
+        return apps.parallelStream().filter(app -> app.getName().contains(query))
                 .sorted(Comparator.comparingInt(o -> o.getName().length())).collect(Collectors.toList());
     }
     
