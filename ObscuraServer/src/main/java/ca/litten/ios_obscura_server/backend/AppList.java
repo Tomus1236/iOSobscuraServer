@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,13 +25,13 @@ public class AppList {
                     out.append(buf[i]);
             }
             JSONArray appArray = new JSONArray(out.toString());
-            for (Object appObject : appArray.toList()) {
+            for (Object appObject : appArray) {
                 JSONObject appJSON = (JSONObject) appObject;
                 App app = new App(appJSON.getString("name"), appJSON.getString("bundle"));
                 for (Object versionObject : appJSON.getJSONArray("versions")) {
                     JSONObject versionJSON = (JSONObject) versionObject;
                     app.addAppVersionNoSort(versionJSON.getString("ver"),
-                            (String[]) versionJSON.getJSONArray("urls").toList().toArray(),
+                            versionJSON.getJSONArray("urls").toList().toArray(new String[]{}),
                             versionJSON.getString("support"));
                 }
                 app.sortVersions();
@@ -50,7 +51,9 @@ public class AppList {
         }
         try {
             FileWriter writer = new FileWriter(file, false);
+            System.out.println(appArray.toString());
             writer.write(appArray.toString());
+            writer.close();
         } catch (IOException e) {
             System.err.println("Failed to write to file!");
         }
@@ -81,5 +84,12 @@ public class AppList {
     public static List<App> searchApps(String query) {
         return apps.stream().filter(app -> app.getName().contains(query))
                 .sorted(Comparator.comparingInt(o -> o.getName().length())).collect(Collectors.toList());
+    }
+    
+    public static boolean appUrlAlreadyExists(String url) {
+        return !apps.parallelStream().filter(app -> !app.getSupportedAppVersions("99999999").values().parallelStream()
+                .filter(strings -> !Arrays.stream(strings).filter(string -> string.equals(url))
+                        .collect(Collectors.toList()).isEmpty()).collect(Collectors.toList()).isEmpty())
+                .collect(Collectors.toList()).isEmpty();
     }
 }

@@ -26,5 +26,7 @@ public class AppDownloaderTest {
         assertEquals("COD Zombies", cod.getName());
         assertEquals(url3, cod.getSupportedAppVersions("3.0").get("1.5.0")[0]);
         assertNull(cod.getSupportedAppVersions("2.2.1").get("1.5.0"));
+        assertTrue(AppList.appUrlAlreadyExists(url3));
+        assertFalse(AppList.appUrlAlreadyExists("https://archive.org/download/iOSObsc"));
     }
 }

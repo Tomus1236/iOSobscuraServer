@@ -5,8 +5,10 @@ import ca.litten.ios_obscura_server.parser.AppDownloader;
 import ca.litten.ios_obscura_server.parser.ArchiveListDecoder;
 import com.google.common.escape.Escaper;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Scanner;
 
 import static com.google.common.net.UrlEscapers.urlPathSegmentEscaper;
 
@@ -22,6 +24,7 @@ public class Main {
     }
     
     public static void main(String[] args) {
+        AppList.loadAppDatabaseFile(new File("db.json"));
         Thread archiveParser = new Thread(() -> {
             Escaper escaper = urlPathSegmentEscaper();
             String[] urlist = ArchiveListDecoder.getUrlListFromArchiveOrgListing(archive_url);
@@ -31,19 +34,24 @@ public class Main {
             task3 = task1;
             task4 = task1;
             task1.start();
-            for (String url : urlist) {
+            for (String temp : urlist) {
+                String[] urlfrags = temp.split("/");
+                String url = "";
+                for (String frag : urlfrags) {
+                    url += escaper.escape(frag) + "/";
+                }
+                url = url.substring(0, url.length() - 1);
                 if (url.contains("PossiblyBroken"))
                     continue;
+                if (AppList.appUrlAlreadyExists(url)) {
+                    System.out.println("Skipped: " + url);
+                    continue;
+                }
+                String finalUrl = url;
                 task = new Thread(() -> {
                     try {
-                        String[] urlfrags = url.split("/");
-                        String fin = "";
-                        for (String frag : urlfrags) {
-                            fin += escaper.escape(frag) + "/";
-                        }
-                        fin = fin.substring(0, fin.length() - 1);
-                        AppDownloader.downloadAndAddApp(new URL(fin));
-                        System.out.println("Parsed: " + fin);
+                        AppDownloader.downloadAndAddApp(new URL(finalUrl));
+                        System.out.println("Parsed: " + finalUrl);
                     } catch (Exception e) {
                         System.err.println(e);
                     }
@@ -67,13 +75,11 @@ public class Main {
             }
         });
         archiveParser.start();
+        Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println(AppList.searchApps("").size());
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            scanner.nextLine();
+            System.out.println("Saving database...");
+            AppList.saveAppDatabaseFile(new File("db.json"));
         }
     }
 }

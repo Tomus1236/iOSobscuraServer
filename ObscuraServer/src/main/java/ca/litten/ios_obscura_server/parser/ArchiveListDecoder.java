@@ -10,7 +10,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedList;
-import java.util.List;
 
 public class ArchiveListDecoder {
     public static String[] getUrlListFromArchiveOrgListing(URL archiveOrgFileListUrl) {
