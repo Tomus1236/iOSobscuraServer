@@ -76,7 +76,7 @@ public class Main {
         });
         archiveParser.start();
         Scanner scanner = new Scanner(System.in);
-        while (true) {
+        while (archiveParser.isAlive()) {
             scanner.nextLine();
             System.out.println("Saving database...");
             AppList.saveAppDatabaseFile(new File("db.json"));
