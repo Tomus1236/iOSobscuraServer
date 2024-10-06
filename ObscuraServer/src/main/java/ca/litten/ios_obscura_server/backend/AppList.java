@@ -4,10 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AppList {
@@ -77,20 +74,38 @@ public class AppList {
     }
     
     public static List<App> searchApps(String query, String version) {
-        return apps.parallelStream()
-                .filter(app -> (app.showAppForVersion(version) && app.getName().contains(query)))
-                .sorted(Comparator.comparingInt(o -> o.getName().length())).collect(Collectors.toList());
+        while (true) {
+            try {
+                return apps.parallelStream()
+                        .filter(app -> (app.showAppForVersion(version) && app.getName().contains(query)))
+                        .sorted(Comparator.comparingInt(o -> o.getName().length())).collect(Collectors.toList());
+            } catch (ConcurrentModificationException e) {
+                // Do nothing
+            }
+        }
     }
     
     public static List<App> searchApps(String query) {
-        return apps.parallelStream().filter(app -> app.getName().contains(query))
-                .sorted(Comparator.comparingInt(o -> o.getName().length())).collect(Collectors.toList());
+        while (true) {
+            try {
+                return apps.parallelStream().filter(app -> app.getName().contains(query))
+                        .sorted(Comparator.comparingInt(o -> o.getName().length())).collect(Collectors.toList());
+            } catch (ConcurrentModificationException e) {
+                // Do nothing
+            }
+        }
     }
     
     public static boolean appUrlAlreadyExists(String url) {
-        return !apps.parallelStream().filter(app -> !app.getSupportedAppVersions("99999999").values().parallelStream()
-                .filter(strings -> !Arrays.stream(strings).filter(string -> string.equals(url))
-                        .collect(Collectors.toList()).isEmpty()).collect(Collectors.toList()).isEmpty())
-                .collect(Collectors.toList()).isEmpty();
+        while (true) {
+            try {
+                return !apps.parallelStream().filter(app -> !app.getSupportedAppVersions("99999999").values().parallelStream()
+                                .filter(strings -> !Arrays.stream(strings).filter(string -> string.equals(url))
+                                        .collect(Collectors.toList()).isEmpty()).collect(Collectors.toList()).isEmpty())
+                        .collect(Collectors.toList()).isEmpty();
+            } catch (ConcurrentModificationException e) {
+                // Do nothing
+            }
+        }
     }
 }
