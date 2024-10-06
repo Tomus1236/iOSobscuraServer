@@ -1,0 +1,52 @@
+package ca.litten.backend;
+
+import org.junit.*;
+
+import java.util.SortedMap;
+
+import static org.junit.Assert.*;
+
+public class AppListTest {
+    private App app;
+    
+    @Test
+    public void TestApp() {
+        app = new App("Test app", "ca.litten.test");
+        app.addAppVersionNoSort("1.0.3", new String[]{"http://litten.ca/test.1.0.3.ipa",
+                "http://backup.litten.ca/test.1.0.3.ipa"}, "5.1.1");
+        app.addAppVersionNoSort("1.0", new String[]{"http://litten.ca/test.1.0.0.ipa"}, "5.2");
+        app.addAppVersionNoSort("1.0.1", new String[]{"http://litten.ca/test.1.0.1.ipa"}, "5.2");
+        app.addAppVersionNoSort("1.0.2", new String[]{"http://litten.ca/test.1.0.2.ipa"}, "5.2");
+        app.addAppVersionNoSort("1.1", new String[]{"http://litten.ca/test.1.1.ipa",
+                "http://backup.litten.ca/test.1.1.ipa"}, "6.0");
+        app.addAppVersionNoSort("1.1.1", new String[]{"http://litten.ca/test.1.1.1.ipa",
+                "http://backup.litten.ca/test.1.1.1.ipa"}, "6.1.3");
+        app.addAppVersionNoSort("1.1.2", new String[]{"http://litten.ca/test.1.1.2.ipa",
+                "http://backup.litten.ca/test.1.1.2.ipa"}, "6.1.3");
+        app.addAppVersion("1.1.3", new String[]{"http://litten.ca/test.1.1.3.ipa",
+                "http://backup.litten.ca/test.1.1.3.ipa"}, "6.1");
+        assertEquals("5.1.1", app.getEarliestSupportedVersion());
+        assertEquals("ca.litten.test", app.getBundleID());
+        assertEquals("Test app", app.getName());
+        SortedMap<String, String[]> supportedVersions511 = app.getSupportedAppVersions("5.1.1");
+        SortedMap<String, String[]> supportedVersions6 = app.getSupportedAppVersions("6.0");
+        SortedMap<String, String[]> supportedVersions7 = app.getSupportedAppVersions("7.0");
+        assertFalse(supportedVersions511.containsKey("1.0"));
+        assertTrue(supportedVersions6.containsKey("1.0"));
+        assertArrayEquals(new String[]{"http://litten.ca/test.1.0.3.ipa",
+                "http://backup.litten.ca/test.1.0.3.ipa"}, supportedVersions511.get("1.0.3"));
+        assertEquals(1, supportedVersions511.size());
+        assertArrayEquals(new String[]{"1.0.3"}, supportedVersions511.keySet().toArray());
+        assertArrayEquals(new String[]{"1.0", "1.0.1", "1.0.2", "1.0.3", "1.1"},
+                supportedVersions6.keySet().toArray());
+        assertArrayEquals(new String[]{"1.0", "1.0.1", "1.0.2", "1.0.3", "1.1", "1.1.1", "1.1.2", "1.1.3"},
+                supportedVersions7.keySet().toArray());
+        assertTrue(app.showAppForVersion("5.1.1"));
+        assertFalse(app.showAppForVersion("5.0"));
+    }
+
+    @Test
+    public void TestAppList() {
+    
+    }
+}
