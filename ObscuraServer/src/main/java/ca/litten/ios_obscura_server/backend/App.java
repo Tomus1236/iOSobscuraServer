@@ -76,11 +76,15 @@ public class App {
     }
     
     public void addAppVersionNoSort(String version, String[] urls, String supportedVersion) {
-        Version appVersion = new Version(version, urls, supportedVersion);
         for (Version otherVersion : versions) {
-            if (otherVersion.equals(appVersion)) return;
+            if (otherVersion.version.equals(version)) {
+                for (String url : urls) {
+                    otherVersion.addUrl(url);
+                }
+                return;
+            }
         }
-        versions.add(appVersion);
+        versions.add(new Version(version, urls, supportedVersion));
         if (isVersionLater(supportedVersion, earliestSupportedVersion))
             earliestSupportedVersion = supportedVersion;
     }
@@ -177,5 +181,14 @@ public class App {
         appJSON.put("dev", developer);
         appJSON.put("devVer", earliestDevVersion);
         return appJSON;
+    }
+    
+    public String[] getUrlsForVersion(String version) {
+        for (Version v : versions) {
+            if (v.version.equals(version)) {
+                return v.urls;
+            }
+        }
+        return new String[]{};
     }
 }
