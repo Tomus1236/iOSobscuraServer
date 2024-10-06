@@ -52,7 +52,6 @@ public class AppList {
         }
         try {
             FileWriter writer = new FileWriter(file, false);
-            System.out.println(appArray.toString());
             writer.write(appArray.toString());
             writer.close();
         } catch (IOException e) {
