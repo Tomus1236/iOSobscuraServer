@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AppList {
-    private static ArrayList<App> apps = new ArrayList<>();
+    private static final ArrayList<App> apps = new ArrayList<>();
     
     public static void loadAppDatabaseFile(File file) {
         try {

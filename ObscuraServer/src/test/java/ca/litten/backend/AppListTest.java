@@ -7,11 +7,10 @@ import java.util.SortedMap;
 import static org.junit.Assert.*;
 
 public class AppListTest {
-    private App app;
     
     @Test
     public void TestApp() {
-        app = new App("Test app", "ca.litten.test");
+        App app = new App("Test app", "ca.litten.test");
         app.addAppVersionNoSort("1.0.3", new String[]{"http://litten.ca/test.1.0.3.ipa",
                 "http://backup.litten.ca/test.1.0.3.ipa"}, "5.1.1");
         app.addAppVersionNoSort("1.0", new String[]{"http://litten.ca/test.1.0.0.ipa"}, "5.2");

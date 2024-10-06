@@ -7,7 +7,7 @@ import java.util.*;
 
 public class App {
     
-    private class Version {
+    private static class Version {
         private final String version;
         private final String[] urls;
         private final String supportedVersion;
@@ -24,8 +24,8 @@ public class App {
         }
     }
     
-    private String name;
-    private String bundleID;
+    private final String name;
+    private final String bundleID;
     private String earliestSupportedVersion = "99999999";
     
     private ArrayList<Version> versions;
