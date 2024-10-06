@@ -25,6 +25,7 @@ public class AppDownloader {
             String version = "0.0";
             String minimumVersion = "0.0";
             String artwork = "";
+            String developer = null;
             ZipInputStream zipExtractor = new ZipInputStream(connection.getInputStream());
             ZipEntry entry = zipExtractor.getNextEntry();
             boolean foundOther = false;
@@ -81,6 +82,11 @@ public class AppDownloader {
                             }
                             case "softwareIcon57x57URL":
                                 artwork = String.valueOf(parsedData.get("softwareIcon57x57URL"));
+                            case "artistName":{
+                                String str = String.valueOf(parsedData.get("artistName"));
+                                if (str.equals("null")) break;
+                                developer = str;
+                            }
                         }
                     }
                     if (foundOther) {
@@ -97,6 +103,7 @@ public class AppDownloader {
             }
             app.addAppVersionNoSort(version, new String[]{url.toString()}, minimumVersion);
             app.updateArtwork(version, artwork);
+            app.updateArtwork(version, developer);
         } catch (Exception e) {
             System.err.println(e);
         }

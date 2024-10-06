@@ -35,6 +35,7 @@ public class AppList {
                             versionJSON.getString("support"));
                 }
                 app.updateArtwork(appJSON.getString("artver"), appJSON.getString("art"));
+                app.updateDeveloper(appJSON.getString("devVer"), appJSON.getString("dev"));
                 app.sortVersions();
                 apps.add(app);
             }

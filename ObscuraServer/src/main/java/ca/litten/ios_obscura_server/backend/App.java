@@ -40,6 +40,9 @@ public class App {
     private String earliestArtVersion = earliestSupportedVersion;
     private String artworkURL = "";
     
+    private String earliestDevVersion = earliestSupportedVersion;
+    private String developer = "Unknown Developer";
+    
     private final ArrayList<Version> versions;
     
     public boolean showAppForVersion(String version) {
@@ -56,6 +59,14 @@ public class App {
     
     public String getEarliestSupportedVersion() {
         return earliestSupportedVersion;
+    }
+    
+    public String getArtworkURL() {
+        return artworkURL;
+    }
+    
+    public String getDeveloper() {
+        return developer;
     }
     
     public App(String name, String bundleID) {
@@ -78,6 +89,14 @@ public class App {
         if (isVersionLater(version, earliestArtVersion)) {
             earliestArtVersion = version;
             artworkURL = url;
+        }
+    }
+    
+    public void updateDeveloper(String version, String dev) {
+        if (dev == null) return;
+        if (isVersionLater(version, earliestDevVersion)) {
+            earliestDevVersion = version;
+            developer = dev;
         }
     }
     
@@ -155,6 +174,8 @@ public class App {
         appJSON.put("versions", versionArray);
         appJSON.put("art", artworkURL);
         appJSON.put("artver", earliestArtVersion);
+        appJSON.put("dev", developer);
+        appJSON.put("devVer", earliestDevVersion);
         return appJSON;
     }
 }
