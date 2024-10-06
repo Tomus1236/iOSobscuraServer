@@ -24,6 +24,7 @@ public class AppDownloader {
             String bundleID = "";
             String version = "0.0";
             String minimumVersion = "0.0";
+            String artwork = "";
             ZipInputStream zipExtractor = new ZipInputStream(connection.getInputStream());
             ZipEntry entry = zipExtractor.getNextEntry();
             boolean foundOther = false;
@@ -33,12 +34,24 @@ public class AppDownloader {
                     NSDictionary parsedData = (NSDictionary) PropertyListParser.parse(bytes);
                     for (String key : parsedData.allKeys()) {
                         switch (key) {
-                            case "CFBundleIdentifier":
-                                bundleID = String.valueOf(parsedData.get("CFBundleIdentifier"));
-                            case "CFBundleVersion":
-                                version = String.valueOf(parsedData.get("CFBundleVersion"));
-                            case "MinimumOSVersion":
-                                minimumVersion = String.valueOf(parsedData.get("MinimumOSVersion"));
+                            case "CFBundleDisplayName":
+                                if (appName.isEmpty())
+                                    appName = String.valueOf(parsedData.get("CFBundleDisplayName"));
+                            case "CFBundleIdentifier": {
+                                String str = String.valueOf(parsedData.get("CFBundleIdentifier"));
+                                if (str.equals("null")) break;
+                                bundleID = str;
+                            }
+                            case "CFBundleVersion": {
+                                String str = String.valueOf(parsedData.get("CFBundleVersion"));
+                                if (str.equals("null")) break;
+                                version = str;
+                            }
+                            case "MinimumOSVersion":{
+                                String str = String.valueOf(parsedData.get("MinimumOSVersion"));
+                                if (str.equals("null")) break;
+                                minimumVersion = str;
+                            }
                         }
                     }
                     if (foundOther) {
@@ -51,12 +64,23 @@ public class AppDownloader {
                     NSDictionary parsedData = (NSDictionary) PropertyListParser.parse(bytes);
                     for (String key : parsedData.allKeys()) {
                         switch (key) {
-                            case "softwareVersionBundleId":
-                                bundleID = String.valueOf(parsedData.get("softwareVersionBundleId"));
-                            case "bundleVersion":
-                                version = String.valueOf(parsedData.get("bundleVersion"));
-                            case "itemName":
-                                appName = String.valueOf(parsedData.get("itemName"));
+                            case "softwareVersionBundleId": {
+                                String str = String.valueOf(parsedData.get("softwareVersionBundleId"));
+                                if (str.equals("null")) break;
+                                bundleID = str;
+                            }
+                            case "bundleShortVersionString": {
+                                String str = String.valueOf(parsedData.get("bundleShortVersionString"));
+                                if (str.equals("null")) break;
+                                version = str;
+                            }
+                            case "itemName": {
+                                String str = String.valueOf(parsedData.get("itemName"));
+                                if (str.equals("null")) break;
+                                appName = str;
+                            }
+                            case "softwareIcon57x57URL":
+                                artwork = String.valueOf(parsedData.get("softwareIcon57x57URL"));
                         }
                     }
                     if (foundOther) {
@@ -72,6 +96,7 @@ public class AppDownloader {
                 AppList.addApp(app);
             }
             app.addAppVersionNoSort(version, new String[]{url.toString()}, minimumVersion);
+            app.updateArtwork(version, artwork);
         } catch (Exception e) {
             System.err.println(e);
         }

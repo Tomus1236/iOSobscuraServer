@@ -21,9 +21,10 @@ public class AppDownloaderTest {
         AppDownloader.downloadAndAddApp(new URL(url2));
         AppDownloader.downloadAndAddApp(new URL(url));
         App cod = AppList.getAppByBundleID("com.activision.callofduty");
+        System.out.println(cod.getSupportedAppVersions("3.0").toString());
         assertNotNull(cod);
         assertEquals("2.2.1", cod.getEarliestSupportedVersion());
-        assertEquals("COD Zombies", cod.getName());
+        assertEquals("Call of Duty: Zombies", cod.getName());
         assertEquals(url3, cod.getSupportedAppVersions("3.0").get("1.5.0")[0]);
         assertNull(cod.getSupportedAppVersions("2.2.1").get("1.5.0"));
         assertTrue(AppList.appUrlAlreadyExists(url3));

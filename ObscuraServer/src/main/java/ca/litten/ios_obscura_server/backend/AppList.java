@@ -34,6 +34,7 @@ public class AppList {
                             versionJSON.getJSONArray("urls").toList().toArray(new String[]{}),
                             versionJSON.getString("support"));
                 }
+                app.updateArtwork(appJSON.getString("artver"), appJSON.getString("art"));
                 app.sortVersions();
                 apps.add(app);
             }

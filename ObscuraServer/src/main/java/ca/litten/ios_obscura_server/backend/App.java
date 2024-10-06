@@ -37,6 +37,9 @@ public class App {
     private final String bundleID;
     private String earliestSupportedVersion = "99999999";
     
+    private String earliestArtVersion = earliestSupportedVersion;
+    private String artworkURL = "";
+    
     private final ArrayList<Version> versions;
     
     public boolean showAppForVersion(String version) {
@@ -71,11 +74,18 @@ public class App {
             earliestSupportedVersion = supportedVersion;
     }
     
+    public void updateArtwork(String version, String url) {
+        if (isVersionLater(version, earliestArtVersion)) {
+            earliestArtVersion = version;
+            artworkURL = url;
+        }
+    }
+    
     public void sortVersions() {
         versions.sort((o1, o2) -> {
             if (o1 == null) return -1;
             if (o2 == null) return 1;
-            if (o1.version.equals(o2.version)) return 0;
+            if (o1.version.equals(o2.version)) return o1.urls[0].compareTo(o2.urls[0]);
             return (isVersionLater(o1.version, o2.version)) ? -1 : 1;
         });
     }
@@ -143,6 +153,8 @@ public class App {
             versionArray.put(versionJSON);
         }
         appJSON.put("versions", versionArray);
+        appJSON.put("art", artworkURL);
+        appJSON.put("artver", earliestArtVersion);
         return appJSON;
     }
 }
