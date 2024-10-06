@@ -77,7 +77,13 @@ public class Main {
         archiveParser.start();
         Scanner scanner = new Scanner(System.in);
         while (archiveParser.isAlive()) {
-            scanner.nextLine();
+            try {
+                Thread.sleep(1000*60*2);
+            } catch (InterruptedException e) {
+                System.out.println("Saving database...");
+                AppList.saveAppDatabaseFile(new File("db.json"));
+                throw new RuntimeException(e);
+            }
             System.out.println("Saving database...");
             AppList.saveAppDatabaseFile(new File("db.json"));
         }
