@@ -3,10 +3,16 @@ package ca.litten.ios_obscura_server.parser;
 import ca.litten.ios_obscura_server.backend.App;
 import ca.litten.ios_obscura_server.backend.AppList;
 import com.dd.plist.NSDictionary;
+import com.dd.plist.PropertyListFormatException;
 import com.dd.plist.PropertyListParser;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -101,10 +107,10 @@ public class AppDownloader {
                 app = new App(appName, bundleID);
                 AppList.addApp(app);
             }
-            app.addAppVersionNoSort(version, new String[]{url.toString()}, minimumVersion);
             app.updateArtwork(version, artwork);
-            app.updateArtwork(version, developer);
-        } catch (Exception e) {
+            app.updateDeveloper(version, developer);
+            app.addAppVersionNoSort(version, new String[]{url.toString()}, minimumVersion);
+        } catch (Throwable e) {
             System.err.println(e);
         }
     }
