@@ -1,4 +1,4 @@
-package ca.litten.backend;
+package ca.litten.ios_obscura_server.backend;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -64,6 +64,12 @@ public class AppList {
         List<App> theApp = apps.stream().filter(app -> (app.getBundleID().equals(bundleID))).collect(Collectors.toList());
         if (theApp.isEmpty()) return null;
         return theApp.get(0);
+    }
+    
+    public static void addApp(App app) {
+        if (getAppByBundleID(app.getBundleID()) == null) {
+            apps.add(app);
+        }
     }
     
     public static List<App> searchApps(String query, String version) {

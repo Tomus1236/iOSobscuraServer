@@ -1,15 +1,16 @@
-package ca.litten.backend;
+package ca.litten.ios_obscura_server.backend;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class App {
     
     private static class Version {
         private final String version;
-        private final String[] urls;
+        private String[] urls;
         private final String supportedVersion;
         
         public Version(String version, String[] urls, String supportedVersion) {
@@ -22,13 +23,21 @@ public class App {
         public int hashCode() {
             return Objects.hash(version, Arrays.hashCode(urls), supportedVersion);
         }
+        
+        public void addUrl(String url) {
+            if (Arrays.stream(urls).noneMatch(url::equals)) {
+                List<String> urlList = Arrays.stream(urls).collect(Collectors.toList());
+                urlList.add(url);
+                urls = (String[]) urlList.toArray();
+            }
+        }
     }
     
     private final String name;
     private final String bundleID;
     private String earliestSupportedVersion = "99999999";
     
-    private ArrayList<Version> versions;
+    private final ArrayList<Version> versions;
     
     public boolean showAppForVersion(String version) {
         return isVersionLater(earliestSupportedVersion, version);

@@ -1,5 +1,6 @@
-package ca.litten.backend;
+package ca.ios_obscura_server.backend;
 
+import ca.litten.ios_obscura_server.backend.App;
 import org.junit.*;
 
 import java.util.SortedMap;
