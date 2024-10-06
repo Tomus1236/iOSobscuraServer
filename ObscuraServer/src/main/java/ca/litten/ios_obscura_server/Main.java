@@ -75,7 +75,6 @@ public class Main {
             }
         });
         archiveParser.start();
-        Scanner scanner = new Scanner(System.in);
         while (archiveParser.isAlive()) {
             try {
                 Thread.sleep(1000*60*2);
