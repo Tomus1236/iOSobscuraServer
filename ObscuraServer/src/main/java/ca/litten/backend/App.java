@@ -84,17 +84,27 @@ public class App {
         int supportVer;
         for (int i = 0; i < checkLen; i++) {
             try {
-                supportVer = Integer.parseInt(support[i]);
-            } catch (IndexOutOfBoundsException e) {
-                supportVer = 0;
+                try {
+                    supportVer = Integer.parseInt(support[i]);
+                } catch (IndexOutOfBoundsException e) {
+                    supportVer = 0;
+                }
+                try {
+                    checkVer = Integer.parseInt(check[i]);
+                } catch (IndexOutOfBoundsException e) {
+                    checkVer = 0;
+                }
+                if (supportVer > checkVer) return false;
+                if (supportVer < checkVer) return true;
+            } catch (NumberFormatException e) {
+                try {
+                    int comp = support[i].compareTo(check[i]);
+                    if (comp < 0) return false;
+                    if (comp > 0) return true;
+                } catch (IndexOutOfBoundsException f) {
+                    return support.length < check.length;
+                }
             }
-            try {
-                checkVer = Integer.parseInt(check[i]);
-            } catch (IndexOutOfBoundsException e) {
-                checkVer = 0;
-            }
-            if (supportVer > checkVer) return false;
-            if (supportVer < checkVer) return true;
         }
         return true; // Earliest supported version
     }

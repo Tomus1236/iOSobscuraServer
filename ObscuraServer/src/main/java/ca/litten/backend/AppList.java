@@ -61,14 +61,19 @@ public class AppList {
     }
     
     public static App getAppByBundleID(String bundleID) {
-        List<App> theApp = apps.stream().filter(app -> (app.getBundleID() == bundleID)).collect(Collectors.toList());
+        List<App> theApp = apps.stream().filter(app -> (app.getBundleID().equals(bundleID))).collect(Collectors.toList());
         if (theApp.isEmpty()) return null;
         return theApp.get(0);
     }
     
+    public static List<App> searchApps(String query, String version) {
+        return apps.stream()
+                .filter(app -> (app.showAppForVersion(version) && app.getName().contains(query)))
+                .sorted(Comparator.comparingInt(o -> o.getName().length())).collect(Collectors.toList());
+    }
+    
     public static List<App> searchApps(String query) {
-        List<App> queriedApps = apps.stream().filter(app -> app.getName().contains(query)).collect(Collectors.toList());
-        queriedApps.sort(Comparator.comparingInt(o -> o.getName().length()));
-        return queriedApps;
+        return apps.stream().filter(app -> app.getName().contains(query))
+                .sorted(Comparator.comparingInt(o -> o.getName().length())).collect(Collectors.toList());
     }
 }
