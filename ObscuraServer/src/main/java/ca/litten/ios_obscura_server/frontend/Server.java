@@ -51,7 +51,7 @@ public class Server {
             for (int i = 0; i < Math.min(20, s); i++) {
                 random = rand.nextInt(apps.size());
                 app = apps.remove(random);
-                out.append("<a style=\"height:77px\" href=\"getAppVersions/").append(app.getBundleID()).append("\"><div><div style=\"height:77px;overflow:hidden\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"getAppIcon/")
+                out.append("<a style=\"height:77px\" href=\"getAppVersions/").append(app.getBundleID()).append("\"><div><div style=\"height:77px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"getAppIcon/")
                     .append(app.getBundleID()).append("\"><center style=\"line-height:57px\">").append(app.getName())
                         .append("</center></div></div></a>");
             }
@@ -116,7 +116,7 @@ public class Server {
                 return;
             }
             out.append(Templates.generateBasicHeader(app.getName()))
-                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px;overflow:hidden\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../getAppIcon/")
+                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../getAppIcon/")
                     .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(app.getName())
                     .append("</center></strong></div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset><label>Versions</label><fieldset>");
             for (String version : app.getSupportedAppVersions(iOS_ver)) {
@@ -206,7 +206,7 @@ public class Server {
                 return;
             }
             out.append(Templates.generateBasicHeader(app.getName()))
-                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px;overflow:hidden\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../../getAppIcon/")
+                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../../getAppIcon/")
                     .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(app.getName())
                     .append("</center></strong></div></div><div><div>Version ").append(splitURI[3])
                     .append("</div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset>");
@@ -219,7 +219,7 @@ public class Server {
                         .append("\"><div><div>Direct Download</div></div></a><a href=\"itms-services://?action=download-manifest&url=http://")
                         .append(incomingHeaders.get("host").get(0)).append("/generateInstallManifest/")
                         .append(splitURI[2]).append("/").append(splitURI[3]).append("/").append(i)
-                        .append("\"><div><div>iOS Direct Install (Alpha)</div></div></a></fieldset>");
+                        .append("\"><div><div>iOS Direct Install <small style=\"font-size:x-small\">Probably Won't Work</small></div></div></a></fieldset>");
             }
             out.append("</panel></body></html>");
             byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
