@@ -78,12 +78,12 @@ public class AppList {
     
     public static List<App> searchApps(String query, String version) {
         return apps.parallelStream()
-                .filter(app -> (app.showAppForVersion(version) && app.getName().contains(query)))
+                .filter(app -> (app.showAppForVersion(version) && app.getName().toLowerCase().contains(query.toLowerCase())))
                 .sorted(Comparator.comparingInt(o -> o.getName().length())).collect(Collectors.toList());
     }
     
     public static List<App> searchApps(String query) {
-        return apps.parallelStream().filter(app -> app.getName().contains(query))
+        return apps.parallelStream().filter(app -> app.getName().toLowerCase().contains(query.toLowerCase()))
                 .sorted(Comparator.comparingInt(o -> o.getName().length())).collect(Collectors.toList());
     }
     

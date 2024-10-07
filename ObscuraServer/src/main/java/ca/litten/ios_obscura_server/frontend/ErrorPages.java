@@ -34,6 +34,16 @@ public class ErrorPages {
                         </div>
                     </div>
                 </a>
+                <div>
+                    <div>
+                        <form action=\"/searchPost\">
+                            <input type\"text\" name=\"search\" value=\"\" style=\"border-bottom:1px solid #999\" placeholder=\"Search\">
+                            <button style=\"float:right;background:none\" type=\"submit\">
+                                <img style=\"height:18px;border-radius:50%\" src=\"/searchIcon\">
+                            </button>
+                        </form>
+                    </div>
+                </div>
                 <a href="javascript:history.back()">
                     <div>
                         <div>
@@ -78,6 +88,16 @@ public class ErrorPages {
                         </div>
                     </div>
                 </a>
+                <div>
+                    <div>
+                        <form action=\"/searchPost\">
+                            <input type\"text\" name=\"search\" value=\"\" style=\"border-bottom:1px solid #999\" placeholder=\"Search\">
+                            <button style=\"float:right;background:none\" type=\"submit\">
+                                <img style=\"height:18px;border-radius:50%\" src=\"/searchIcon\">
+                            </button>
+                        </form>
+                    </div>
+                </div>
                 <a href="javascript:history.back()">
                     <div>
                         <div>

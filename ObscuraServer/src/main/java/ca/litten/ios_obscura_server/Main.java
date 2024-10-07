@@ -13,7 +13,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
-import java.util.Scanner;
 
 import static com.google.common.net.UrlEscapers.urlPathSegmentEscaper;
 
@@ -55,10 +54,8 @@ public class Main {
                         // Do nothing
                     }
                 }
-                if (good) {
-                    System.out.println("Skipped: " + url);
+                if (good)
                     continue;
-                }
                 String finalUrl = url;
                 task = new Thread(() -> {
                     try {

@@ -7,18 +7,35 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.spi.HttpServerProvider;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class Server {
     private HttpServer server;
     private static final HttpServerProvider provider = HttpServerProvider.provider();
-    private HttpContext rootContext;
     private static Random rand = new Random();
+    private static byte[] searchIcon;
+    
+    static {
+        try {
+            File file = new File("searchIcon.jpg");
+            FileInputStream search = new FileInputStream(file);
+            searchIcon = new byte[Math.toIntExact(file.length())];
+            search.read(searchIcon);
+            search.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     
     public Server(InetSocketAddress address) throws IOException {
         server = provider.createHttpServer(address, -1);
@@ -43,7 +60,7 @@ public class Server {
             }
             StringBuilder out = new StringBuilder();
             out.append(Templates.generateBasicHeader("iOS Obscura Locator"))
-                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div><center><strong>iPhone OS Obscura Locator Homepage</strong></center></div></div></fieldset><label>A few random apps</label><fieldset>");
+                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div><center><strong>iPhone OS Obscura Locator Homepage</strong></center></div></div><div><div><form action=\"searchPost\"><input type\"text\" name=\"search\" value=\"\" style=\"border-bottom:1px solid #999\" placeholder=\"Search\"><button style=\"float:right;background:none\" type=\"submit\"><img style=\"height:18px;border-radius:50%\" src=\"/searchIcon\"></button></form></div></div></fieldset><label>Some Apps</label><fieldset>");
             List<App> apps = AppList.listAppsThatSupportVersion(iOS_ver);
             App app;
             int random;
@@ -51,8 +68,9 @@ public class Server {
             for (int i = 0; i < Math.min(20, s); i++) {
                 random = rand.nextInt(apps.size());
                 app = apps.remove(random);
-                out.append("<a style=\"height:77px\" href=\"getAppVersions/").append(app.getBundleID()).append("\"><div><div style=\"height:77px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"getAppIcon/")
-                    .append(app.getBundleID()).append("\"><center style=\"line-height:57px\">").append(app.getName())
+                out.append("<a style=\"height:77px\" href=\"getAppVersions/").append(app.getBundleID())
+                        .append("\"><div><div style=\"height:77px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"getAppIcon/")
+                    .append(app.getBundleID()).append("\"><center style=\"line-height:57px\">").append(cutStringTo(app.getName(), 15))
                         .append("</center></div></div></a>");
             }
             out.append("</fieldset></panel></body></html>");
@@ -82,7 +100,7 @@ public class Server {
         });
         server.createContext("/getAppIcon/").setHandler(exchange -> {
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            String[] splitURI = exchange.getRequestURI().toString().split("/");
+            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8).split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null || app.getArtworkURL().isEmpty() || !app.getArtworkURL().startsWith("http")) {
                 outgoingHeaders.set("Location", "https://files.scottshar.es/Share%20Sheets/app-icons/Placeholder-Icon.png");
@@ -106,7 +124,7 @@ public class Server {
                 String[] split2 = split1[0].split(" ");
                 iOS_ver = split2[split2.length - 1].replace("_", ".");
             }
-            String[] splitURI = exchange.getRequestURI().toString().split("/");
+            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8).split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null) {
                 byte[] bytes = ErrorPages.app404.getBytes(StandardCharsets.UTF_8);
@@ -116,11 +134,11 @@ public class Server {
                 return;
             }
             out.append(Templates.generateBasicHeader(app.getName()))
-                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../getAppIcon/")
-                    .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(app.getName())
+                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"/getAppIcon/")
+                    .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(cutStringTo(app.getName(), 20))
                     .append("</center></strong></div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset><label>Versions</label><fieldset>");
             for (String version : app.getSupportedAppVersions(iOS_ver)) {
-                out.append("<a href=\"../../getAppVersionLinks/").append(app.getBundleID()).append("/").append(version)
+                out.append("<a href=\"/getAppVersionLinks/").append(app.getBundleID()).append("/").append(version)
                         .append("\"><div><div>").append(version).append("</div></div></a>");
             }
             out.append("</fieldset></panel></body></html>");
@@ -130,11 +148,10 @@ public class Server {
             exchange.close();
         });
         server.createContext("/generateInstallManifest/").setHandler(exchange -> {
-            Headers incomingHeaders = exchange.getRequestHeaders();
             Headers outgoingHeaders = exchange.getResponseHeaders();
             outgoingHeaders.set("Content-Type", "text/xml");
             StringBuilder out = new StringBuilder();
-            String[] splitURI = exchange.getRequestURI().toString().split("/");
+            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8).split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null) {
                 exchange.sendResponseHeaders(404, ErrorPages.app404.length());
@@ -196,7 +213,7 @@ public class Server {
             Headers incomingHeaders = exchange.getRequestHeaders();
             Headers outgoingHeaders = exchange.getResponseHeaders();
             outgoingHeaders.set("Content-Type", "text/html; charset=utf-8");
-            String[] splitURI = exchange.getRequestURI().toString().split("/");
+            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8).split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null) {
                 byte[] bytes = ErrorPages.app404.getBytes(StandardCharsets.UTF_8);
@@ -206,8 +223,8 @@ public class Server {
                 return;
             }
             out.append(Templates.generateBasicHeader(app.getName()))
-                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../../getAppIcon/")
-                    .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(app.getName())
+                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"/getAppIcon/")
+                    .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(cutStringTo(app.getName(), 20))
                     .append("</center></strong></div></div><div><div>Version ").append(splitURI[3])
                     .append("</div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset>");
             String[] versions = app.getUrlsForVersion(splitURI[3]);
@@ -219,7 +236,7 @@ public class Server {
                         .append("\"><div><div>Direct Download</div></div></a><a href=\"itms-services://?action=download-manifest&url=http://")
                         .append(incomingHeaders.get("host").get(0)).append("/generateInstallManifest/")
                         .append(splitURI[2]).append("/").append(splitURI[3]).append("/").append(i)
-                        .append("\"><div><div>iOS Direct Install <small style=\"font-size:x-small\">Probably Won't Work</small></div></div></a></fieldset>");
+                        .append("\"><div><div>iOS Direct Install <small style=\"font-size:x-small\">Might Not Work</small></div></div></a></fieldset>");
             }
             out.append("</panel></body></html>");
             byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
@@ -227,9 +244,77 @@ public class Server {
             exchange.getResponseBody().write(bytes);
             exchange.close();
         });
+        server.createContext("/searchPost").setHandler(exchange -> {
+            Headers outgoingHeaders = exchange.getResponseHeaders();
+            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8).split("\\?");
+            outgoingHeaders.set("Location", "search/" + splitURI[1].substring(7));
+            outgoingHeaders.set("Cache-Control", "max-age=172800");
+            exchange.sendResponseHeaders(308, 0);
+            exchange.close();
+        });
+        server.createContext("/search").setHandler(exchange -> {
+            StringBuilder out = new StringBuilder();
+            Headers incomingHeaders = exchange.getRequestHeaders();
+            Headers outgoingHeaders = exchange.getResponseHeaders();
+            outgoingHeaders.set("Content-Type", "text/html; charset=utf-8");
+            String userAgent = incomingHeaders.get("user-agent").get(0);
+            boolean iOS_connection = userAgent.contains("iPhone OS") || userAgent.contains("iPad");
+            String iOS_ver = "99999999";
+            if (iOS_connection) {
+                String[] split1 = userAgent.split("like Mac OS X");
+                String[] split2 = split1[0].split(" ");
+                iOS_ver = split2[split2.length - 1].replace("_", ".");
+            }
+            outgoingHeaders.set("Content-Type", "text/html; charset=utf-8");
+            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8).split("/");
+            String query;
+            try {
+                query = splitURI[2];
+            } catch (IndexOutOfBoundsException e) {
+                query = "";
+            }
+            out.append(Templates.generateBasicHeader("Search: " + query))
+                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div><center><strong>Search iPhone OS Obscura</strong></center></div></div>")
+                    .append("<div><div><form action=\"/searchPost\"><input type\"text\" name=\"search\" value=\"").append(query)
+                    .append("\" style=\"border-bottom:1px solid #999\" placeholder=\"Search\"><button style=\"float:right;background:none\" type=\"submit\"><img style=\"height:18px;border-radius:50%\" src=\"/searchIcon\"></button></form></div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset>");
+            if (!query.isEmpty()) {
+                out.append("<label>Search Results</label><fieldset>");
+                List<App> apps = AppList.searchApps(query, iOS_ver);
+                App app;
+                int s = apps.size();
+                for (int i = 0; i < Math.min(20, s); i++) {
+                    app = apps.remove(0);
+                    out.append("<a style=\"height:77px\" href=\"/getAppVersions/").append(app.getBundleID())
+                            .append("\"><div><div style=\"height:77px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"/getAppIcon/")
+                            .append(app.getBundleID()).append("\"><center style=\"line-height:57px\">").append(cutStringTo(app.getName(), 15))
+                            .append("</center></div></div></a>");
+                }
+                out.append("</fieldset>");
+            }
+            out.append("</panel></body></html>");
+            byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
+            exchange.sendResponseHeaders(200, bytes.length);
+            exchange.getResponseBody().write(bytes);
+            exchange.close();
+        });
+        server.createContext("/searchIcon").setHandler(exchange -> {
+            Headers outgoingHeaders = exchange.getResponseHeaders();
+            outgoingHeaders.set("Content-Type", "image/jpg");
+            exchange.sendResponseHeaders(200, searchIcon.length);
+            exchange.getResponseBody().write(searchIcon);
+            exchange.close();
+        });
     }
     
     public void startServer() {
         server.start();
+    }
+    
+    private String cutStringTo(String str, int len) {
+        str = str.trim();
+        if (str.length() < len) {
+            return str;
+        }
+        return (str.substring(0, len).trim()) + "...";
     }
 }
