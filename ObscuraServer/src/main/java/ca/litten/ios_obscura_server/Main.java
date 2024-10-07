@@ -1,11 +1,14 @@
 package ca.litten.ios_obscura_server;
 
 import ca.litten.ios_obscura_server.backend.AppList;
+import ca.litten.ios_obscura_server.frontend.Server;
 import ca.litten.ios_obscura_server.parser.AppDownloader;
 import ca.litten.ios_obscura_server.parser.ArchiveListDecoder;
 import com.google.common.escape.Escaper;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -68,8 +71,16 @@ public class Main {
         }
     }
     
+    private static Server server;
+    
     public static void main(String[] args) {
         AppList.loadAppDatabaseFile(new File("db.json"));
+        try {
+            server = new Server(new InetSocketAddress(6969));
+            server.startServer();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         ArchiveParser archiveParser = new ArchiveParser();
         archiveParser.start();
         while (archiveParser.isAlive()) {

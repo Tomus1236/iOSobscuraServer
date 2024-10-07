@@ -112,7 +112,7 @@ public class AppDownloader {
             }
             app.updateArtwork(version, artwork);
             app.updateDeveloper(version, developer);
-            app.addAppVersionNoSort(version, new String[]{url.toString()}, minimumVersion);
+            app.addAppVersion(version, new String[]{url.toString()}, minimumVersion);
         } catch (Throwable e) {
             System.err.println(e);
         }

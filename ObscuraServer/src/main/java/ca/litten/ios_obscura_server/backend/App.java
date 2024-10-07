@@ -28,7 +28,7 @@ public class App {
             if (Arrays.stream(urls).noneMatch(url::equals)) {
                 List<String> urlList = Arrays.stream(urls).collect(Collectors.toList());
                 urlList.add(url);
-                urls = (String[]) urlList.toArray();
+                urls = urlList.toArray(new String[]{});
             }
         }
     }
