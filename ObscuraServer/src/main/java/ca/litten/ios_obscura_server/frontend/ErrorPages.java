@@ -33,6 +33,13 @@ public class ErrorPages {
                         </div>
                     </div>
                 </a>
+                <a href="javascript:history.back()">
+                    <div>
+                        <div>
+                            Go Back
+                        </div>
+                    </div>
+                <a>
             </fieldset>
         </panel>
     </body>

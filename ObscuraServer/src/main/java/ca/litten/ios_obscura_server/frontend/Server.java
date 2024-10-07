@@ -10,8 +10,7 @@ import com.sun.net.httpserver.spi.HttpServerProvider;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.SortedMap;
+import java.util.Map;
 
 public class Server {
     private HttpServer server;
@@ -94,19 +93,29 @@ public class Server {
                 exchange.close();
                 return;
             }
+            System.out.println("1");
             out.append(Templates.generateBasicHeader(app.getName()))
                     .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../getAppIcon/")
                     .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(app.getName())
-                    .append("</center></strong></div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset><label>Versions</label><fieldset>");
-            SortedMap<String, String[]> versions = app.getSupportedAppVersions(iOS_ver);
+                    .append("</center></strong></div></div>");
+            if (incomingHeaders.containsKey("referer"))
+                out.append("<a href=\"").append(incomingHeaders.get("referer").get(0))
+                    .append("\"><div><div>Go Back</div></div></a>");
+            out.append("</fieldset><label>Versions</label><fieldset>");
+            System.out.println("2");
+            Map<String, String[]> versions = app.getSupportedAppVersions(iOS_ver);
+            System.out.println("3");
             for (String version : versions.keySet()) {
                 out.append("<a href=\"../../getAppVersionLinks/").append(app.getBundleID()).append("/").append(version)
                         .append("\"><div><div>").append(version).append("</div></div></a>");
             }
+            System.out.println("4");
             out.append("</fieldset></panel></body></html>");
+            System.out.println("5");
             exchange.sendResponseHeaders(200, out.length());
             exchange.getResponseBody().write(out.toString().getBytes(StandardCharsets.UTF_8));
             exchange.close();
+            System.out.println("6");
         });
         server.createContext("/generateInstallManifest/").setHandler(exchange -> {
             Headers incomingHeaders = exchange.getRequestHeaders();
@@ -187,7 +196,11 @@ public class Server {
                     .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../../getAppIcon/")
                     .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(app.getName())
                     .append("</center></strong></div></div><div><div>Version ").append(splitURI[3])
-                    .append("</div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset>");
+                    .append("</div></div>");
+            if (incomingHeaders.containsKey("referer"))
+                out.append("<a href=\"").append(incomingHeaders.get("referer").get(0))
+                        .append("\"><div><div>Go Back</div></div></a>");
+            out.append("</fieldset>");
             String[] versions = app.getUrlsForVersion(splitURI[3]);
             for (int i = 0; i < versions.length; i++) {
                 out.append("<label>#").append(i + 1).append(", ").append(versions[i].split("//")[1].split("/")[0]);

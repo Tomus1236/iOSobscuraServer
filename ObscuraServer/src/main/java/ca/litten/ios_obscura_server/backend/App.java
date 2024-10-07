@@ -152,8 +152,8 @@ public class App {
         return true; // Earliest supported version
     }
     
-    public SortedMap<String, String[]> getSupportedAppVersions(String version) {
-        SortedMap<String, String[]> map = new TreeMap<>();
+    public Map<String, String[]> getSupportedAppVersions(String version) {
+        HashMap<String, String[]> map = new HashMap<>();
         for (Version appVer : versions) {
             if (isVersionLater(appVer.supportedVersion, version)) map.put(appVer.version, appVer.urls);
         }
