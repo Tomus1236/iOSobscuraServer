@@ -23,9 +23,9 @@ public class Main {
         }
     }
     
-    public static void main(String[] args) {
-        AppList.loadAppDatabaseFile(new File("db.json"));
-        Thread archiveParser = new Thread(() -> {
+    private static class ArchiveParser extends Thread {
+        @Override
+        public void run() {
             Escaper escaper = urlPathSegmentEscaper();
             String[] urlist = ArchiveListDecoder.getUrlListFromArchiveOrgListing(archive_url);
             Thread task1, task2, task3, task4, task;
@@ -73,15 +73,20 @@ public class Main {
                     task4 = task;
                 task.start();
             }
-        });
+        }
+    }
+    
+    public static void main(String[] args) {
+        AppList.loadAppDatabaseFile(new File("db.json"));
+        ArchiveParser archiveParser = new ArchiveParser();
         archiveParser.start();
         while (archiveParser.isAlive()) {
             try {
-                Thread.sleep(1000*60*2);
+                Thread.sleep(1000 * 60 * 2);
             } catch (InterruptedException e) {
                 System.out.println("Saving database...");
                 AppList.saveAppDatabaseFile(new File("db.json"));
-                throw new RuntimeException(e);
+                break;
             }
             System.out.println("Saving database...");
             AppList.saveAppDatabaseFile(new File("db.json"));
