@@ -8,6 +8,7 @@ import com.google.common.escape.Escaper;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import static com.google.common.net.UrlEscapers.urlPathSegmentEscaper;
@@ -28,12 +29,10 @@ public class Main {
         public void run() {
             Escaper escaper = urlPathSegmentEscaper();
             String[] urlist = ArchiveListDecoder.getUrlListFromArchiveOrgListing(archive_url);
-            Thread task1, task2, task3, task4, task;
-            task1 = new Thread(() -> {});
-            task2 = task1;
-            task3 = task1;
-            task4 = task1;
-            task1.start();
+            Thread task;
+            Thread[] tasks = new Thread[Runtime.getRuntime().availableProcessors()];
+            task = new Thread(() -> {});
+            Arrays.fill(tasks, task);
             for (String temp : urlist) {
                 String[] urlfrags = temp.split("/");
                 String url = "";
@@ -56,22 +55,13 @@ public class Main {
                         System.err.println(e);
                     }
                 });
-                while (task1.isAlive() && task2.isAlive() && task3.isAlive() && task4.isAlive()) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        // Do nothing
+                while (!task.isAlive()) {
+                    for (int i = 0; i < tasks.length; i++) {
+                        if (!tasks[i].isAlive()) {
+                            tasks[i] = task;
+                        }
                     }
                 }
-                if (!task1.isAlive())
-                    task1 = task;
-                else if (!task2.isAlive())
-                    task2 = task;
-                else if (!task3.isAlive())
-                    task3 = task;
-                else
-                    task4 = task;
-                task.start();
             }
         }
     }
