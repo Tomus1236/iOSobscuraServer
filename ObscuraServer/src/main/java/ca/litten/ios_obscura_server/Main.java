@@ -59,6 +59,8 @@ public class Main {
                     for (int i = 0; i < tasks.length; i++) {
                         if (!tasks[i].isAlive()) {
                             tasks[i] = task;
+                            task.start();
+                            break;
                         }
                     }
                 }
