@@ -75,6 +75,13 @@ public class Main {
                     }
                 }
             }
+            for (Thread thread : tasks) {
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    // LOL
+                }
+            }
         }
     }
     
