@@ -76,7 +76,7 @@ public class Main {
     public static void main(String[] args) {
         AppList.loadAppDatabaseFile(new File("db.json"));
         try {
-            server = new Server(new InetSocketAddress(6969));
+            server = new Server(new InetSocketAddress(Integer.parseInt(args[0])));
             server.startServer();
         } catch (IOException e) {
             throw new RuntimeException(e);

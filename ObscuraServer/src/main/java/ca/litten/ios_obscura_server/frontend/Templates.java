@@ -5,6 +5,7 @@ public class Templates {
         return "<!DOCTYPE html>\n" +
                 "<html>\n" +
                 "    <head>\n" +
+                "        <meta charset=\"utf-8\">\n" +
                 "        <title>" + title + "</title>\n" +
                 "        <style>\n" +
                 "        @import url(https://cydia.saurik.com/cytyle/style-3163da6b7950852a03d31ea77735f4e1d2ba6699.css);\n" +

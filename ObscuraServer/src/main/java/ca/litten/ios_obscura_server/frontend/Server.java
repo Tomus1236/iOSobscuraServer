@@ -25,7 +25,7 @@ public class Server {
         server.createContext("/").setHandler(exchange -> {
             Headers incomingHeaders = exchange.getRequestHeaders();
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            outgoingHeaders.set("Content-Type", "text/html");
+            outgoingHeaders.set("Content-Type", "text/html; charset=utf-8");
             String userAgent = incomingHeaders.get("user-agent").get(0);
             boolean iOS_connection = userAgent.contains("iPhone OS") || userAgent.contains("iPad");
             String iOS_ver = "99999999";
@@ -65,7 +65,7 @@ public class Server {
             StringBuilder out = new StringBuilder();
             Headers incomingHeaders = exchange.getRequestHeaders();
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            outgoingHeaders.set("Content-Type", "text/html");
+            outgoingHeaders.set("Content-Type", "text/html; charset=utf-8");
             out.append("<!DOCTYPE html>\n<html><body><ol>");
             for (String key : incomingHeaders.keySet()) {
                 out.append("<li>").append(key).append("<ol>");
@@ -97,7 +97,7 @@ public class Server {
             StringBuilder out = new StringBuilder();
             Headers incomingHeaders = exchange.getRequestHeaders();
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            outgoingHeaders.set("Content-Type", "text/html");
+            outgoingHeaders.set("Content-Type", "text/html; charset=utf-8");
             String userAgent = incomingHeaders.get("user-agent").get(0);
             boolean iOS_connection = userAgent.contains("iPhone OS") || userAgent.contains("iPad");
             String iOS_ver = "99999999";
@@ -195,7 +195,7 @@ public class Server {
             StringBuilder out = new StringBuilder();
             Headers incomingHeaders = exchange.getRequestHeaders();
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            outgoingHeaders.set("Content-Type", "text/html");
+            outgoingHeaders.set("Content-Type", "text/html; charset=utf-8");
             String[] splitURI = exchange.getRequestURI().toString().split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null) {
