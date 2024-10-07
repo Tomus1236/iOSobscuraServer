@@ -152,12 +152,15 @@ public class App {
         return true; // Earliest supported version
     }
     
-    public Map<String, String[]> getSupportedAppVersions(String version) {
-        HashMap<String, String[]> map = new HashMap<>();
+    public String[] getSupportedAppVersions(String version) {
+        List<String> halfway = new ArrayList<>();
         for (Version appVer : versions) {
-            if (isVersionLater(appVer.supportedVersion, version)) map.put(appVer.version, appVer.urls);
+            if (isVersionLater(appVer.supportedVersion, version)) {
+                halfway.add(appVer.version);
+            }
         }
-        return map;
+        halfway.sort((o1, o2) -> (isVersionLater(o1, o2)) ? -1 : 1);
+        return halfway.toArray(new String[]{});
     }
     
     public JSONObject getAppJSON() {
@@ -191,5 +194,13 @@ public class App {
             }
         }
         return new String[]{};
+    }
+    
+    public List<String> getAllUrls() {
+        LinkedList<String> list = new LinkedList<>();
+        for (Version v : versions) {
+            list.addAll(List.of(v.urls));
+        }
+        return list;
     }
 }

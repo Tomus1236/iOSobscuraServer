@@ -96,13 +96,8 @@ public class Server {
             out.append(Templates.generateBasicHeader(app.getName()))
                     .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../getAppIcon/")
                     .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(app.getName())
-                    .append("</center></strong></div></div>");
-            if (incomingHeaders.containsKey("referer"))
-                out.append("<a href=\"").append(incomingHeaders.get("referer").get(0))
-                    .append("\"><div><div>Go Back</div></div></a>");
-            out.append("</fieldset><label>Versions</label><fieldset>");
-            Map<String, String[]> versions = app.getSupportedAppVersions(iOS_ver);
-            for (String version : versions.keySet()) {
+                    .append("</center></strong></div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset><label>Versions</label><fieldset>");
+            for (String version : app.getSupportedAppVersions(iOS_ver)) {
                 out.append("<a href=\"../../getAppVersionLinks/").append(app.getBundleID()).append("/").append(version)
                         .append("\"><div><div>").append(version).append("</div></div></a>");
             }
@@ -190,11 +185,7 @@ public class Server {
                     .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../../getAppIcon/")
                     .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(app.getName())
                     .append("</center></strong></div></div><div><div>Version ").append(splitURI[3])
-                    .append("</div></div>");
-            if (incomingHeaders.containsKey("referer"))
-                out.append("<a href=\"").append(incomingHeaders.get("referer").get(0))
-                        .append("\"><div><div>Go Back</div></div></a>");
-            out.append("</fieldset>");
+                    .append("</div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset>");
             String[] versions = app.getUrlsForVersion(splitURI[3]);
             for (int i = 0; i < versions.length; i++) {
                 out.append("<label>#").append(i + 1).append(", ").append(versions[i].split("//")[1].split("/")[0]);

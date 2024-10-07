@@ -88,9 +88,7 @@ public class AppList {
     }
     
     public static boolean appUrlAlreadyExists(String url) {
-        return !apps.parallelStream().filter(app -> !app.getSupportedAppVersions("99999999").values().parallelStream()
-                .filter(strings -> !Arrays.stream(strings).filter(string -> string.equals(url))
-                        .collect(Collectors.toList()).isEmpty()).collect(Collectors.toList()).isEmpty())
-                .collect(Collectors.toList()).isEmpty();
+        return !apps.parallelStream().filter(app -> !app.getAllUrls().parallelStream().filter(string -> string.equals(url))
+                        .collect(Collectors.toList()).isEmpty()).collect(Collectors.toList()).isEmpty();
     }
 }
