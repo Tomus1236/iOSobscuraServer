@@ -93,7 +93,6 @@ public class Server {
                 exchange.close();
                 return;
             }
-            System.out.println("1");
             out.append(Templates.generateBasicHeader(app.getName()))
                     .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../getAppIcon/")
                     .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(app.getName())
@@ -102,20 +101,15 @@ public class Server {
                 out.append("<a href=\"").append(incomingHeaders.get("referer").get(0))
                     .append("\"><div><div>Go Back</div></div></a>");
             out.append("</fieldset><label>Versions</label><fieldset>");
-            System.out.println("2");
             Map<String, String[]> versions = app.getSupportedAppVersions(iOS_ver);
-            System.out.println("3");
             for (String version : versions.keySet()) {
                 out.append("<a href=\"../../getAppVersionLinks/").append(app.getBundleID()).append("/").append(version)
                         .append("\"><div><div>").append(version).append("</div></div></a>");
             }
-            System.out.println("4");
             out.append("</fieldset></panel></body></html>");
-            System.out.println("5");
             exchange.sendResponseHeaders(200, out.length());
             exchange.getResponseBody().write(out.toString().getBytes(StandardCharsets.UTF_8));
             exchange.close();
-            System.out.println("6");
         });
         server.createContext("/generateInstallManifest/").setHandler(exchange -> {
             Headers incomingHeaders = exchange.getRequestHeaders();
