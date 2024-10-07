@@ -82,12 +82,20 @@ public class Main {
     
     public static void main(String[] args) {
         AppList.loadAppDatabaseFile(new File("db.json"));
-        try {
-            server = new Server(new InetSocketAddress(Integer.parseInt(args[0])));
-            server.startServer();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        {
+            int port;
+            try {
+                port = Integer.parseInt(args[0]);
+            } catch (Exception e) {
+                port = 12345;
+            }
+            try {
+                server = new Server(new InetSocketAddress(port));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
+        server.startServer();
         ArchiveParser archiveParser = new ArchiveParser();
         archiveParser.start();
         while (archiveParser.isAlive()) {
@@ -101,5 +109,6 @@ public class Main {
             System.out.println("Saving database...");
             AppList.saveAppDatabaseFile(new File("db.json"));
         }
+        System.out.println("Finished parsing!");
     }
 }
