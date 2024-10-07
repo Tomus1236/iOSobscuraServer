@@ -10,20 +10,22 @@ import com.sun.net.httpserver.spi.HttpServerProvider;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Server {
     private HttpServer server;
     private static final HttpServerProvider provider = HttpServerProvider.provider();
     private HttpContext rootContext;
+    private static Random rand = new Random();
     
     public Server(InetSocketAddress address) throws IOException {
         server = provider.createHttpServer(address, -1);
         server.createContext("/").setHandler(exchange -> {
-            StringBuilder out = new StringBuilder();
             Headers incomingHeaders = exchange.getRequestHeaders();
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            int status = 404;
+            outgoingHeaders.set("Content-Type", "text/html");
             String userAgent = incomingHeaders.get("user-agent").get(0);
             boolean iOS_connection = userAgent.contains("iPhone OS") || userAgent.contains("iPad");
             String iOS_ver = "99999999";
@@ -32,13 +34,31 @@ public class Server {
                 String[] split2 = split1[0].split(" ");
                 iOS_ver = split2[split2.length - 1].replace("_", ".");
             }
-            switch (exchange.getRequestURI().toString()) {
-                default: {
-                    System.out.println(exchange.getRequestURI());
-                }
+            if (!(exchange.getRequestURI().toString().equals("/") || exchange.getRequestURI().toString().isEmpty())) {
+                byte[] bytes = ErrorPages.general404.getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(404, bytes.length);
+                exchange.getResponseBody().write(bytes);
+                exchange.close();
+                return;
             }
-            exchange.sendResponseHeaders(status, out.length());
-            exchange.getResponseBody().write(out.toString().getBytes(StandardCharsets.UTF_8));
+            StringBuilder out = new StringBuilder();
+            out.append(Templates.generateBasicHeader("iOS Obscura Locator"))
+                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div><center><strong>iPhone OS Obscura Locator Homepage</strong></center></div></div></fieldset><label>A few random apps</label><fieldset>");
+            List<App> apps = AppList.listAppsThatSupportVersion(iOS_ver);
+            App app;
+            int random;
+            int s = apps.size();
+            for (int i = 0; i < Math.min(20, s); i++) {
+                random = rand.nextInt(apps.size());
+                app = apps.remove(random);
+                out.append("<a style=\"height:77px\" href=\"getAppVersions/").append(app.getBundleID()).append("\"><div><div style=\"height:77px;overflow:hidden\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"getAppIcon/")
+                    .append(app.getBundleID()).append("\"><center style=\"line-height:57px\">").append(app.getName())
+                        .append("</center></div></div></a>");
+            }
+            out.append("</fieldset></panel></body></html>");
+            byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
+            exchange.sendResponseHeaders(200, bytes.length);
+            exchange.getResponseBody().write(bytes);
             exchange.close();
         });
         server.createContext("/getHeader").setHandler(exchange -> {
@@ -55,8 +75,9 @@ public class Server {
                 out.append("</ol></li>");
             }
             out.append("</ol></body></html>");
-            exchange.sendResponseHeaders(200, out.length());
-            exchange.getResponseBody().write(out.toString().getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
+            exchange.sendResponseHeaders(200, bytes.length);
+            exchange.getResponseBody().write(bytes);
             exchange.close();
         });
         server.createContext("/getAppIcon/").setHandler(exchange -> {
@@ -88,13 +109,14 @@ public class Server {
             String[] splitURI = exchange.getRequestURI().toString().split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null) {
-                exchange.sendResponseHeaders(404, ErrorPages.app404.length());
-                exchange.getResponseBody().write(ErrorPages.app404.getBytes(StandardCharsets.UTF_8));
+                byte[] bytes = ErrorPages.app404.getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(404, bytes.length);
+                exchange.getResponseBody().write(bytes);
                 exchange.close();
                 return;
             }
             out.append(Templates.generateBasicHeader(app.getName()))
-                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../getAppIcon/")
+                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px;overflow:hidden\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../getAppIcon/")
                     .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(app.getName())
                     .append("</center></strong></div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset><label>Versions</label><fieldset>");
             for (String version : app.getSupportedAppVersions(iOS_ver)) {
@@ -102,8 +124,9 @@ public class Server {
                         .append("\"><div><div>").append(version).append("</div></div></a>");
             }
             out.append("</fieldset></panel></body></html>");
-            exchange.sendResponseHeaders(200, out.length());
-            exchange.getResponseBody().write(out.toString().getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
+            exchange.sendResponseHeaders(200, bytes.length);
+            exchange.getResponseBody().write(bytes);
             exchange.close();
         });
         server.createContext("/generateInstallManifest/").setHandler(exchange -> {
@@ -176,13 +199,14 @@ public class Server {
             String[] splitURI = exchange.getRequestURI().toString().split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null) {
-                exchange.sendResponseHeaders(404, ErrorPages.app404.length());
-                exchange.getResponseBody().write(ErrorPages.app404.getBytes(StandardCharsets.UTF_8));
+                byte[] bytes = ErrorPages.app404.getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(404, bytes.length);
+                exchange.getResponseBody().write(bytes);
                 exchange.close();
                 return;
             }
             out.append(Templates.generateBasicHeader(app.getName()))
-                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../../getAppIcon/")
+                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px;overflow:hidden\"><img style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"../../getAppIcon/")
                     .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(app.getName())
                     .append("</center></strong></div></div><div><div>Version ").append(splitURI[3])
                     .append("</div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset>");
@@ -198,8 +222,9 @@ public class Server {
                         .append("\"><div><div>iOS Direct Install (Alpha)</div></div></a></fieldset>");
             }
             out.append("</panel></body></html>");
-            exchange.sendResponseHeaders(200, out.length());
-            exchange.getResponseBody().write(out.toString().getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
+            exchange.sendResponseHeaders(200, bytes.length);
+            exchange.getResponseBody().write(bytes);
             exchange.close();
         });
     }
