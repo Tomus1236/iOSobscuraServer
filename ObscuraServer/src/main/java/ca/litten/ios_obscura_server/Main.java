@@ -12,6 +12,7 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.Scanner;
 
 import static com.google.common.net.UrlEscapers.urlPathSegmentEscaper;
@@ -45,7 +46,16 @@ public class Main {
                 url = url.substring(0, url.length() - 1);
                 if (url.contains("PossiblyBroken") || url.contains("Homebrew%20IPAs"))
                     continue;
-                if (AppList.appUrlAlreadyExists(url)) {
+                boolean good;
+                while (true) {
+                    try {
+                        good = AppList.appUrlAlreadyExists(url);
+                        break;
+                    } catch (ConcurrentModificationException e) {
+                        // Do nothing
+                    }
+                }
+                if (good) {
                     System.out.println("Skipped: " + url);
                     continue;
                 }
