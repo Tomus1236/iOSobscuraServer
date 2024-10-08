@@ -230,6 +230,8 @@ public class Server {
             String[] versions = app.getUrlsForVersion(splitURI[3]);
             for (int i = 0; i < versions.length; i++) {
                 out.append("<label>#").append(i + 1).append(", ").append(versions[i].split("//")[1].split("/")[0]);
+                if (versions[i].split("//")[1].split("/")[0].contains("archive.org"))
+                    out.append(", ").append(versions[i].split("//")[1].split("/")[2]);
                 if (versions[i].startsWith("https"))
                     out.append(", SSL");
                 out.append("</label><fieldset><a href=\"").append(versions[i])
