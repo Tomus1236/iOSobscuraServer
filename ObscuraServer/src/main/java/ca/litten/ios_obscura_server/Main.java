@@ -13,15 +13,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.google.common.net.UrlEscapers.urlPathSegmentEscaper;
 
 public class Main {
-    private static URL archive_url;
+    private static URL[] archive_urls;
     
     static {
         try {
-            archive_url = new URL("https://archive.org/download/iOSObscura/iOSObscura_files.xml");
+            archive_urls = new URL[]{
+                    new URL("https://archive.org/download/iOSObscura/iOSObscura_files.xml"),
+                    new URL("https://ia601306.us.archive.org/11/items/jos-ipa-archive/jos-ipa-archive_files.xml")
+            };
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -31,7 +36,10 @@ public class Main {
         @Override
         public void run() {
             Escaper escaper = urlPathSegmentEscaper();
-            String[] urlist = ArchiveListDecoder.getUrlListFromArchiveOrgListing(archive_url);
+            LinkedList<String> urlist = new LinkedList<>();
+            for (URL url : archive_urls) {
+                urlist.addAll(List.of(ArchiveListDecoder.getUrlListFromArchiveOrgListing(url)));
+            }
             Thread task;
             Thread[] tasks = new Thread[Runtime.getRuntime().availableProcessors()];
             task = new Thread(() -> {});
