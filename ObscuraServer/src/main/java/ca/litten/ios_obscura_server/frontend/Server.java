@@ -18,7 +18,7 @@ public class Server {
     private HttpServer server;
     private static final HttpServerProvider provider = HttpServerProvider.provider();
     private static Random rand = new Random();
-    private static byte[] searchIcon, favicon, mainicon;
+    private static byte[] searchIcon, favicon, mainicon, icon32, icon16;
     private static long lastReload = 0;
     public static boolean allowReload = false;
     private static String servername = "localhost";
@@ -40,6 +40,16 @@ public class Server {
             mainicon = new byte[Math.toIntExact(file.length())];
             icon.read(mainicon);
             icon.close();
+            file = new File("icon16.png");
+            FileInputStream icon16f = new FileInputStream(file);
+            icon16 = new byte[Math.toIntExact(file.length())];
+            icon16f.read(icon16);
+            icon16f.close();
+            file = new File("icon32.png");
+            FileInputStream icon32f = new FileInputStream(file);
+            icon32 = new byte[Math.toIntExact(file.length())];
+            icon32f.read(icon32);
+            icon32f.close();
             file = new File("host.txt");
             try {
                 FileReader host = new FileReader(file);
@@ -295,6 +305,20 @@ public class Server {
             outgoingHeaders.set("Content-Type", "image/png");
             exchange.sendResponseHeaders(200, mainicon.length);
             exchange.getResponseBody().write(mainicon);
+            exchange.close();
+        });
+        server.createContext("/icon32").setHandler(exchange -> {
+            Headers outgoingHeaders = exchange.getResponseHeaders();
+            outgoingHeaders.set("Content-Type", "image/png");
+            exchange.sendResponseHeaders(200, icon32.length);
+            exchange.getResponseBody().write(icon32);
+            exchange.close();
+        });
+        server.createContext("/icon16").setHandler(exchange -> {
+            Headers outgoingHeaders = exchange.getResponseHeaders();
+            outgoingHeaders.set("Content-Type", "image/png");
+            exchange.sendResponseHeaders(200, icon16.length);
+            exchange.getResponseBody().write(icon16);
             exchange.close();
         });
         server.createContext("/favicon.ico").setHandler(exchange -> {
