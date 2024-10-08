@@ -128,5 +128,12 @@ public class Main {
             System.out.println("Finished parsing!");
         }
         Server.allowReload = true;
+        while (true) {
+            try {
+                Thread.sleep(1000 * 60 * 60 * 24);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
