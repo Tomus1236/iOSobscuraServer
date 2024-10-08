@@ -6,10 +6,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.spi.HttpServerProvider;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -34,9 +31,11 @@ public class Server {
             search.read(searchIcon);
             search.close();
             file = new File("host.txt");
-            FileInputStream host = new FileInputStream(file);
             try {
-                servername = Arrays.toString(host.readAllBytes());
+                FileReader host = new FileReader(file);
+                char[] buf = new char[Math.toIntExact(file.length())];
+                host.read(buf);
+                servername = String.valueOf(buf);
             } catch (FileNotFoundException e) {
                 System.err.println("Cannot find host.txt");
             }
