@@ -35,7 +35,7 @@ public class Server {
                 FileReader host = new FileReader(file);
                 char[] buf = new char[Math.toIntExact(file.length())];
                 host.read(buf);
-                servername = String.valueOf(buf);
+                servername = String.valueOf(buf).trim();
             } catch (FileNotFoundException e) {
                 System.err.println("Cannot find host.txt");
             }
