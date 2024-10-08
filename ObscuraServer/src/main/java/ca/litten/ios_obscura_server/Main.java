@@ -14,7 +14,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
-import java.util.List;
 
 import static com.google.common.net.UrlEscapers.urlPathSegmentEscaper;
 
