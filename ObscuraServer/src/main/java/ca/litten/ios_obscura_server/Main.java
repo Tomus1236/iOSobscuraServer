@@ -111,7 +111,7 @@ public class Main {
             }
         }
         server.startServer();
-        if (Arrays.stream(args).anyMatch(a -> a.equals("--noParse"))) {
+        if (Arrays.stream(args).noneMatch(a -> a.equals("--noParse"))) {
             ArchiveParser archiveParser = new ArchiveParser();
             archiveParser.start();
             while (archiveParser.isAlive()) {
