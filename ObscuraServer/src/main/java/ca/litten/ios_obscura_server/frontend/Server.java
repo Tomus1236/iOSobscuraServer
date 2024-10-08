@@ -24,6 +24,8 @@ public class Server {
     private static final HttpServerProvider provider = HttpServerProvider.provider();
     private static Random rand = new Random();
     private static byte[] searchIcon;
+    private static long lastReload = 0;
+    public static boolean allowReload = false;
     
     static {
         try {
@@ -38,6 +40,7 @@ public class Server {
     }
     
     public Server(InetSocketAddress address) throws IOException {
+        lastReload = System.currentTimeMillis();
         server = provider.createHttpServer(address, -1);
         server.createContext("/").setHandler(exchange -> {
             Headers incomingHeaders = exchange.getRequestHeaders();
@@ -305,6 +308,17 @@ public class Server {
             exchange.sendResponseHeaders(200, searchIcon.length);
             exchange.getResponseBody().write(searchIcon);
             exchange.close();
+        });
+        server.createContext("/reload").setHandler(exchange -> {
+            if (!allowReload || (lastReload + 1000 * 60 * 5) > System.currentTimeMillis()) {
+                exchange.sendResponseHeaders(202, 0);
+                exchange.close();
+                return;
+            }
+            AppList.loadAppDatabaseFile(new File("db.json"));
+            exchange.sendResponseHeaders(200, 0);
+            exchange.close();
+            lastReload = System.currentTimeMillis();
         });
     }
     

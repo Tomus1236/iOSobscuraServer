@@ -25,6 +25,7 @@ public class AppList {
                     out.append(buf[i]);
             }
             JSONArray appArray = new JSONArray(out.toString());
+            apps.clear();
             for (Object appObject : appArray) {
                 JSONObject appJSON = (JSONObject) appObject;
                 App app = new App(appJSON.getString("name"), appJSON.getString("bundle"));

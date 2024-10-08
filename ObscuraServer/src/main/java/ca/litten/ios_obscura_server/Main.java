@@ -25,7 +25,7 @@ public class Main {
         try {
             archive_urls = new URL[]{
                     new URL("https://archive.org/download/iOSObscura/iOSObscura_files.xml"),
-                    new URL("https://ia601306.us.archive.org/11/items/jos-ipa-archive/jos-ipa-archive_files.xml")
+                    new URL("https://archive.org/download/jos-ipa-archive/jos-ipa-archive_files.xml")
             };
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
@@ -127,5 +127,6 @@ public class Main {
             }
             System.out.println("Finished parsing!");
         }
+        Server.allowReload = true;
     }
 }
