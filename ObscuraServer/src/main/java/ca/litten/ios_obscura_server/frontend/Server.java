@@ -18,7 +18,7 @@ public class Server {
     private HttpServer server;
     private static final HttpServerProvider provider = HttpServerProvider.provider();
     private static Random rand = new Random();
-    private static byte[] searchIcon;
+    private static byte[] searchIcon, favicon, mainicon;
     private static long lastReload = 0;
     public static boolean allowReload = false;
     private static String servername = "localhost";
@@ -30,6 +30,16 @@ public class Server {
             searchIcon = new byte[Math.toIntExact(file.length())];
             search.read(searchIcon);
             search.close();
+            file = new File("favicon.ico");
+            FileInputStream fav = new FileInputStream(file);
+            favicon = new byte[Math.toIntExact(file.length())];
+            fav.read(favicon);
+            fav.close();
+            file = new File("icon.png");
+            FileInputStream icon = new FileInputStream(file);
+            mainicon = new byte[Math.toIntExact(file.length())];
+            icon.read(mainicon);
+            icon.close();
             file = new File("host.txt");
             try {
                 FileReader host = new FileReader(file);
@@ -144,7 +154,8 @@ public class Server {
             out.append(Templates.generateBasicHeader(app.getName()))
                     .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"/getAppIcon/")
                     .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(cutStringTo(app.getName(), 20))
-                    .append("</center></strong></div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset><label>Versions</label><fieldset>");
+                    .append("</center></strong></div></div><div><div>").append(app.getDeveloper())
+                    .append("</div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset><label>Versions</label><fieldset>");
             for (String version : app.getSupportedAppVersions(iOS_ver)) {
                 out.append("<a href=\"/getAppVersionLinks/").append(app.getBundleID()).append("/").append(version)
                         .append("\"><div><div>").append(version).append("</div></div></a>");
@@ -197,8 +208,10 @@ public class Server {
             out.append(Templates.generateBasicHeader(app.getName()))
                     .append("<body class=\"pinstripe\"><panel><fieldset><div><div style=\"height:57px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"/getAppIcon/")
                     .append(app.getBundleID()).append("\"><strong style=\"padding:.5em 0;line-height:57px\"><center>").append(cutStringTo(app.getName(), 20))
-                    .append("</center></strong></div></div><div><div>Version ").append(splitURI[3])
-                    .append("</div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset>");
+                    .append("</center></strong></div></div><div><div>").append(app.getDeveloper())
+                    .append("</div></div><div><div style=\"overflow:auto\">Version ").append(splitURI[3])
+                    .append("<span style=\"float:right\">Requires iOS ").append(app.getCompatibleVersion(splitURI[3]))
+                    .append("</span></div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset>");
             String[] versions = app.getUrlsForVersion(splitURI[3]);
             for (int i = 0; i < versions.length; i++) {
                 out.append("<label>#").append(i + 1).append(", ").append(versions[i].split("//")[1].split("/")[0]);
@@ -275,6 +288,20 @@ public class Server {
             outgoingHeaders.set("Content-Type", "image/jpg");
             exchange.sendResponseHeaders(200, searchIcon.length);
             exchange.getResponseBody().write(searchIcon);
+            exchange.close();
+        });
+        server.createContext("/icon").setHandler(exchange -> {
+            Headers outgoingHeaders = exchange.getResponseHeaders();
+            outgoingHeaders.set("Content-Type", "image/png");
+            exchange.sendResponseHeaders(200, mainicon.length);
+            exchange.getResponseBody().write(mainicon);
+            exchange.close();
+        });
+        server.createContext("/favicon.ico").setHandler(exchange -> {
+            Headers outgoingHeaders = exchange.getResponseHeaders();
+            outgoingHeaders.set("Content-Type", "image/png");
+            exchange.sendResponseHeaders(200, favicon.length);
+            exchange.getResponseBody().write(favicon);
             exchange.close();
         });
         server.createContext("/reload").setHandler(exchange -> {

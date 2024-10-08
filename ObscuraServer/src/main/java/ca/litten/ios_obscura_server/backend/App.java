@@ -69,6 +69,15 @@ public class App {
         return developer;
     }
     
+    public String getCompatibleVersion(String version) {
+        for (Version v : versions) {
+            if (v.version.equals(version)) {
+                return v.supportedVersion;
+            }
+        }
+        return "69.420";
+    }
+    
     public App(String name, String bundleID) {
         this.name = name;
         this.bundleID = bundleID;
