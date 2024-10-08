@@ -299,7 +299,7 @@ public class Server {
         });
         server.createContext("/favicon.ico").setHandler(exchange -> {
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            outgoingHeaders.set("Content-Type", "image/png");
+            outgoingHeaders.set("Content-Type", "image/vnd.microsoft.icon");
             exchange.sendResponseHeaders(200, favicon.length);
             exchange.getResponseBody().write(favicon);
             exchange.close();
