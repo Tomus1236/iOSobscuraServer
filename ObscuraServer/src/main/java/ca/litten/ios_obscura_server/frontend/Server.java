@@ -108,7 +108,7 @@ public class Server {
         });
         server.createContext("/getAppIcon/").setHandler(exchange -> {
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8).split("/");
+            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8.name()).split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null || app.getArtworkURL().isEmpty() || !app.getArtworkURL().startsWith("http")) {
                 outgoingHeaders.set("Location", "https://files.scottshar.es/Share%20Sheets/app-icons/Placeholder-Icon.png");
@@ -132,7 +132,7 @@ public class Server {
                 String[] split2 = split1[0].split(" ");
                 iOS_ver = split2[split2.length - 1].replace("_", ".");
             }
-            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8).split("/");
+            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8.name()).split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null) {
                 byte[] bytes = ErrorPages.app404.getBytes(StandardCharsets.UTF_8);
@@ -159,7 +159,7 @@ public class Server {
             Headers outgoingHeaders = exchange.getResponseHeaders();
             outgoingHeaders.set("Content-Type", "text/xml");
             StringBuilder out = new StringBuilder();
-            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8).split("/");
+            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8.name()).split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null) {
                 exchange.sendResponseHeaders(404, ErrorPages.app404.length());
@@ -168,50 +168,14 @@ public class Server {
                 return;
             }
             String[] versions = app.getUrlsForVersion(splitURI[3]);
-            out.append("""
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-    <dict>
-        <key>items</key>
-        <array>
-            <dict>
-                <key>assets</key>
-                <array>
-                    <dict>
-                        <key>kind</key>
-                        <string>software-package</string>
-                        <key>url</key>
-                        <string>""").append(versions[Integer.parseInt(splitURI[4])]).append("""
-</string>
-                    </dict>
-                    <dict>
-                        <key>kind</key>
-                        <string>display-image</string>
-                        <key>needs-shine</key>
-                        <false/>
-                        <key>url</key>
-                        <string>""").append(app.getArtworkURL()).append("""
-</string>
-                    </dict>
-                </array>
-                <key>metadata</key>
-                <dict>
-                    <key>bundle-identifier</key>
-                    <string>""").append(splitURI[2]).append("""
-</string>
-                    <key>bundle-version</key>
-                    <string>""").append(splitURI[3]).append("""
-</string>
-                    <key>kind</key>
-                    <string>software</string>
-                    <key>title</key>
-                    <string>""").append(app.getName()).append("""
-</string>
-                </dict>
-            </dict>
-        </array>
-    </dict>
-</plist>""");
+            out.append("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\">\n<dict><key>items</key><array><dict><key>assets</key><array><dict> <key>kind</key> <string>software-package</string> <key>url</key> <string>")
+                    .append(versions[Integer.parseInt(splitURI[4])])
+                    .append("</string></dict><dict><key>kind</key><string>display-image</string><key>needs-shine</key><false/><key>url</key><string>")
+                    .append(app.getArtworkURL())
+                    .append("</string></dict></array><key>metadata</key><dict><key>bundle-identifier</key><string>")
+                    .append(splitURI[2]).append("</string><key>bundle-version</key><string>")
+                    .append(splitURI[3]).append("</string><key>kind</key><string>software</string><key>title</key><string>")
+                    .append(app.getName()).append("</string></dict></dict></array></dict></plist>");
             exchange.sendResponseHeaders(200, out.length());
             exchange.getResponseBody().write(out.toString().getBytes(StandardCharsets.UTF_8));
             exchange.close();
@@ -221,7 +185,7 @@ public class Server {
             Headers incomingHeaders = exchange.getRequestHeaders();
             Headers outgoingHeaders = exchange.getResponseHeaders();
             outgoingHeaders.set("Content-Type", "text/html; charset=utf-8");
-            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8).split("/");
+            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8.name()).split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null) {
                 byte[] bytes = ErrorPages.app404.getBytes(StandardCharsets.UTF_8);
@@ -255,7 +219,7 @@ public class Server {
         });
         server.createContext("/searchPost").setHandler(exchange -> {
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8).split("\\?");
+            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8.name()).split("\\?");
             outgoingHeaders.set("Location", "search/" + splitURI[1].substring(7));
             outgoingHeaders.set("Cache-Control", "max-age=172800");
             exchange.sendResponseHeaders(308, 0);
@@ -275,7 +239,7 @@ public class Server {
                 iOS_ver = split2[split2.length - 1].replace("_", ".");
             }
             outgoingHeaders.set("Content-Type", "text/html; charset=utf-8");
-            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8).split("/");
+            String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8.name()).split("/");
             String query;
             try {
                 query = splitURI[2];

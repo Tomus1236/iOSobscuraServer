@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -37,7 +38,24 @@ public class AppDownloader {
             boolean foundOther = false;
             while (entry != null) {
                 if (entry.getName().endsWith(".app/Info.plist")) {
-                    byte[] bytes = zipExtractor.readAllBytes();
+                    byte[] bytes;
+                    if (entry.getSize() < 0) {
+                        ArrayList<Byte> list = new ArrayList<>();
+                        byte[] buf = new byte[1024];
+                        int read, i;
+                        while ((read = zipExtractor.read(buf)) != -1) {
+                            for (i = 0; i < read; i++) {
+                                list.add(buf[i]);
+                            }
+                        }
+                        bytes = new byte[list.size()];
+                        for (i = 0; i < list.size(); i++) {
+                            bytes[i] = list.get(i);
+                        }
+                    } else {
+                        bytes = new byte[Math.toIntExact(entry.getSize())];
+                        zipExtractor.read(bytes);
+                    }
                     NSDictionary parsedData = (NSDictionary) PropertyListParser.parse(bytes);
                     for (String key : parsedData.allKeys()) {
                         switch (key) {
@@ -67,7 +85,8 @@ public class AppDownloader {
                     foundOther = true;
                 }
                 if (entry.getName().endsWith("iTunesMetadata.plist")) {
-                    byte[] bytes = zipExtractor.readAllBytes();
+                    byte[] bytes = new byte[Math.toIntExact(entry.getSize())];
+                    zipExtractor.read(bytes);
                     NSDictionary parsedData = (NSDictionary) PropertyListParser.parse(bytes);
                     for (String key : parsedData.allKeys()) {
                         switch (key) {

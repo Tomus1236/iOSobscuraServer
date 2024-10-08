@@ -38,7 +38,7 @@ public class Main {
             Escaper escaper = urlPathSegmentEscaper();
             LinkedList<String> urlist = new LinkedList<>();
             for (URL url : archive_urls) {
-                urlist.addAll(List.of(ArchiveListDecoder.getUrlListFromArchiveOrgListing(url)));
+                urlist.addAll(Arrays.asList(ArchiveListDecoder.getUrlListFromArchiveOrgListing(url)));
             }
             Thread task;
             Thread[] tasks = new Thread[Runtime.getRuntime().availableProcessors()];

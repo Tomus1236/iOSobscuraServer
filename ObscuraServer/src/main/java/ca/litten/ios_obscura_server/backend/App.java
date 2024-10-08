@@ -199,7 +199,7 @@ public class App {
     public List<String> getAllUrls() {
         LinkedList<String> list = new LinkedList<>();
         for (Version v : versions) {
-            list.addAll(List.of(v.urls));
+            list.addAll(Arrays.asList(v.urls));
         }
         return list;
     }
