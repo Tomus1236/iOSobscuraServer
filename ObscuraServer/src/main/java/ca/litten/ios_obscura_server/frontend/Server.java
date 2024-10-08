@@ -3,7 +3,6 @@ package ca.litten.ios_obscura_server.frontend;
 import ca.litten.ios_obscura_server.backend.App;
 import ca.litten.ios_obscura_server.backend.AppList;
 import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.spi.HttpServerProvider;
 
@@ -17,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class Server {
     private HttpServer server;
@@ -26,6 +24,7 @@ public class Server {
     private static byte[] searchIcon;
     private static long lastReload = 0;
     public static boolean allowReload = false;
+    private static String servername = "localhost";
     
     static {
         try {
@@ -34,6 +33,13 @@ public class Server {
             searchIcon = new byte[Math.toIntExact(file.length())];
             search.read(searchIcon);
             search.close();
+            file = new File("host.txt");
+            FileInputStream host = new FileInputStream(file);
+            try {
+                servername = Arrays.toString(host.readAllBytes());
+            } catch (FileNotFoundException e) {
+                System.err.println("Cannot find host.txt");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -238,9 +244,8 @@ public class Server {
                 if (versions[i].startsWith("https"))
                     out.append(", SSL");
                 out.append("</label><fieldset><a href=\"").append(versions[i])
-                        .append("\"><div><div>Direct Download</div></div></a><a href=\"itms-services://?action=download-manifest&url=http://")
-                        .append(incomingHeaders.get("host").get(0)).append("/generateInstallManifest/")
-                        .append(splitURI[2]).append("/").append(splitURI[3]).append("/").append(i)
+                        .append("\"><div><div>Direct Download</div></div></a><a href=\"itms-services://?action=download-manifest&url=https://")
+                        .append(servername).append("/generateInstallManifest/").append(splitURI[2]).append("/").append(splitURI[3]).append("/").append(i)
                         .append("\"><div><div>iOS Direct Install <small style=\"font-size:x-small\">Might Not Work</small></div></div></a></fieldset>");
             }
             out.append("</panel></body></html>");
