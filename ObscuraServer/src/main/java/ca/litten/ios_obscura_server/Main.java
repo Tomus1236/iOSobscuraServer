@@ -103,19 +103,21 @@ public class Main {
             }
         }
         server.startServer();
-        ArchiveParser archiveParser = new ArchiveParser();
-        archiveParser.start();
-        while (archiveParser.isAlive()) {
-            try {
-                Thread.sleep(1000 * 60 * 2);
-            } catch (InterruptedException e) {
+        if (Arrays.stream(args).anyMatch(a -> a.equals("--noParse"))) {
+            ArchiveParser archiveParser = new ArchiveParser();
+            archiveParser.start();
+            while (archiveParser.isAlive()) {
+                try {
+                    Thread.sleep(1000 * 60 * 2);
+                } catch (InterruptedException e) {
+                    System.out.println("Saving database...");
+                    AppList.saveAppDatabaseFile(new File("db.json"));
+                    break;
+                }
                 System.out.println("Saving database...");
                 AppList.saveAppDatabaseFile(new File("db.json"));
-                break;
             }
-            System.out.println("Saving database...");
-            AppList.saveAppDatabaseFile(new File("db.json"));
+            System.out.println("Finished parsing!");
         }
-        System.out.println("Finished parsing!");
     }
 }
