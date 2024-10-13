@@ -277,14 +277,18 @@ public class Server {
             if (!query.isEmpty()) {
                 out.append("<label>Search Results</label><fieldset>");
                 List<App> apps = AppList.searchApps(query, iOS_ver);
-                App app;
-                int s = apps.size();
-                for (int i = 0; i < Math.min(20, s); i++) {
-                    app = apps.remove(0);
-                    out.append("<a style=\"height:77px\" href=\"/getAppVersions/").append(app.getBundleID())
-                            .append("\"><div><div style=\"height:77px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"/getAppIcon/")
-                            .append(app.getBundleID()).append("\"><center style=\"line-height:57px\">").append(cutStringTo(app.getName(), 15))
-                            .append("</center></div></div></a>");
+                if (apps.isEmpty()) {
+                    out.append("<div><div>No Search Results</div></div>");
+                } else {
+                    App app;
+                    int s = apps.size();
+                    for (int i = 0; i < Math.min(20, s); i++) {
+                        app = apps.remove(0);
+                        out.append("<a style=\"height:77px\" href=\"/getAppVersions/").append(app.getBundleID())
+                                .append("\"><div><div style=\"height:77px;overflow:hidden\"><img loading=\"lazy\" style=\"float:left;height:57px;width:57px;border-radius:15.625%\" src=\"/getAppIcon/")
+                                .append(app.getBundleID()).append("\"><center style=\"line-height:57px\">").append(cutStringTo(app.getName(), 15))
+                                .append("</center></div></div></a>");
+                    }
                 }
                 out.append("</fieldset>");
             }
