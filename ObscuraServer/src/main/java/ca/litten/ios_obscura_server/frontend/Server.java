@@ -244,7 +244,7 @@ public class Server {
         server.createContext("/searchPost").setHandler(exchange -> {
             Headers outgoingHeaders = exchange.getResponseHeaders();
             String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8.name()).split("\\?");
-            outgoingHeaders.set("Location", "search/" + splitURI[1].substring(7));
+            outgoingHeaders.set("Location", "/search/" + splitURI[1].substring(7));
             outgoingHeaders.set("Cache-Control", "max-age=172800");
             exchange.sendResponseHeaders(308, 0);
             exchange.close();
@@ -300,7 +300,7 @@ public class Server {
         });
         server.createContext("/searchIcon").setHandler(exchange -> {
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            outgoingHeaders.set("Content-Type", "image/jpg");
+            outgoingHeaders.set("Content-Type", "image/jpeg");
             exchange.sendResponseHeaders(200, searchIcon.length);
             exchange.getResponseBody().write(searchIcon);
             exchange.close();
