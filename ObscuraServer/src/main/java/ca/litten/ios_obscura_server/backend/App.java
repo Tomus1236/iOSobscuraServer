@@ -11,7 +11,7 @@ public class App {
     private static class Version {
         private final String version;
         private String[] urls;
-        private final String supportedVersion;
+        private String supportedVersion;
         
         public Version(String version, String[] urls, String supportedVersion) {
             this.version = version;
@@ -85,17 +85,18 @@ public class App {
     }
     
     public void addAppVersionNoSort(String version, String[] urls, String supportedVersion) {
+        if (isVersionLater(supportedVersion, earliestSupportedVersion))
+            earliestSupportedVersion = supportedVersion;
         for (Version otherVersion : versions) {
             if (otherVersion.version.equals(version)) {
-                for (String url : urls) {
+                if (isVersionLater(supportedVersion, otherVersion.supportedVersion))
+                    otherVersion.supportedVersion = supportedVersion;
+                for (String url : urls)
                     otherVersion.addUrl(url);
-                }
                 return;
             }
         }
         versions.add(new Version(version, urls, supportedVersion));
-        if (isVersionLater(supportedVersion, earliestSupportedVersion))
-            earliestSupportedVersion = supportedVersion;
     }
     
     public void updateArtwork(String version, String url) {
