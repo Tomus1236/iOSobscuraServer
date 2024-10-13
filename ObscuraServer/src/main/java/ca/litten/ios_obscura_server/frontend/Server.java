@@ -278,7 +278,7 @@ public class Server {
                 out.append("<label>Search Results</label><fieldset>");
                 List<App> apps = AppList.searchApps(query, iOS_ver);
                 if (apps.isEmpty()) {
-                    out.append("<div><div>Couldn't find anything.<br>Make sure you've typed everything correctly, or try shortening your query.</div></div>");
+                    out.append("<div><div>Couldn't find anything!</div></div><div><div>Make sure you've typed everything correctly, or try shortening your query.</div></div>");
                 } else {
                     App app;
                     int s = apps.size();
