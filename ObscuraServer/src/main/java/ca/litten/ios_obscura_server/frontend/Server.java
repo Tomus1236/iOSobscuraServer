@@ -177,21 +177,22 @@ public class Server {
         });
         server.createContext("/generateInstallManifest/").setHandler(exchange -> {
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            outgoingHeaders.set("Content-Type", "text/xml");
             StringBuilder out = new StringBuilder();
             String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8.name()).split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null) {
+                outgoingHeaders.set("Content-Type", "text/html");
                 exchange.sendResponseHeaders(404, ErrorPages.app404.length());
                 exchange.getResponseBody().write(ErrorPages.app404.getBytes(StandardCharsets.UTF_8));
                 exchange.close();
                 return;
             }
+            outgoingHeaders.set("Content-Type", "text/xml");
             String[] versions = app.getUrlsForVersion(splitURI[3]);
-            out.append("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\">\n<dict><key>items</key><array><dict><key>assets</key><array><dict> <key>kind</key> <string>software-package</string> <key>url</key> <string>")
+            out.append("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\">\n<dict><key>items</key><array><dict><key>assets</key><array><dict><key>kind</key><string>software-package</string><key>url</key><string>")
                     .append(versions[Integer.parseInt(splitURI[4])])
-                    .append("</string></dict><dict><key>kind</key><string>display-image</string><key>needs-shine</key><false/><key>url</key><string>")
-                    .append(app.getArtworkURL())
+                    .append("</string></dict><dict><key>kind</key><string>display-image</string><key>needs-shine</key><false/><key>url</key><string>https://")
+                    .append(servername).append("/getAppIcon/").append(app.getBundleID())
                     .append("</string></dict></array><key>metadata</key><dict><key>bundle-identifier</key><string>")
                     .append(splitURI[2]).append("</string><key>bundle-version</key><string>")
                     .append(splitURI[3]).append("</string><key>kind</key><string>software</string><key>title</key><string>")
