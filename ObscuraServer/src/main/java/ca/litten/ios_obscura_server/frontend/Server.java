@@ -197,8 +197,9 @@ public class Server {
                     .append(splitURI[2]).append("</string><key>bundle-version</key><string>")
                     .append(splitURI[3]).append("</string><key>kind</key><string>software</string><key>title</key><string>")
                     .append(app.getName()).append("</string></dict></dict></array></dict></plist>");
-            exchange.sendResponseHeaders(200, out.length());
-            exchange.getResponseBody().write(out.toString().getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
+            exchange.sendResponseHeaders(200, bytes.length);
+            exchange.getResponseBody().write(bytes);
             exchange.close();
         });
         server.createContext("/getAppVersionLinks/").setHandler(exchange -> {
