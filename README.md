@@ -1,4 +1,8 @@
-# iOSobscuraServer
-iOS Obscura search engine, effectively.<br>
-https://archive.org/details/iOSObscura<br>
-Very WIP atm.
+# iOS Obscura Server
+Search iPhoneOS Obscura, and a few other archive.org libraries!<br>
+Current archives:
+- https://archive.org/details/iOSObscura
+- https://archive.org/details/jos-ipa-archive
+
+## How to set up
+TODO
