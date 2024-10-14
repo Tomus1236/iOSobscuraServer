@@ -100,7 +100,7 @@ public class Server {
                     .append(app.getBundleID()).append("\"><center style=\"line-height:57px\">").append(cutStringTo(app.getName(), 15))
                         .append("</center></div></div></a>");
             }
-            out.append("<a href=\"https://github.com/CatsLover2006/iOSobscuraServer\"><div><div>Check out the Github!</div></div></a></fieldset></panel></body></html>");
+            out.append("</fieldset><fieldset><a href=\"https://github.com/CatsLover2006/iOSobscuraServer\"><div><div>Check out the Github!</div></div></a></fieldset></panel></body></html>");
             byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
             exchange.sendResponseHeaders(200, bytes.length);
             exchange.getResponseBody().write(bytes);
