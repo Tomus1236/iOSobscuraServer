@@ -204,7 +204,6 @@ public class Server {
         });
         server.createContext("/getAppVersionLinks/").setHandler(exchange -> {
             StringBuilder out = new StringBuilder();
-            Headers incomingHeaders = exchange.getRequestHeaders();
             Headers outgoingHeaders = exchange.getResponseHeaders();
             outgoingHeaders.set("Content-Type", "text/html; charset=utf-8");
             String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8.name()).split("/");
@@ -236,6 +235,21 @@ public class Server {
                         .append("\"><div><div>iOS Direct Install <small style=\"font-size:x-small\">Might Not Work</small></div></div></a></fieldset>");
             }
             out.append("</panel></body></html>");
+            byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
+            exchange.sendResponseHeaders(200, bytes.length);
+            exchange.getResponseBody().write(bytes);
+            exchange.close();
+        });
+        server.createContext("/sitemap").setHandler(exchange -> {
+            StringBuilder out = new StringBuilder();
+            Headers outgoingHeaders = exchange.getResponseHeaders();
+            outgoingHeaders.set("Content-Type", "text/plain");
+            for (App app : AppList.searchApps("")) {
+                out.append("https://").append(servername).append("/getAppVersions/").append(app.getBundleID()).append("\n");
+                for (String version : app.getSupportedAppVersions("99999999"))
+                    out.append("https://").append(servername).append("/getAppVersionLinks/").append(app.getBundleID())
+                            .append("/").append(version).append("\n");
+            }
             byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
             exchange.sendResponseHeaders(200, bytes.length);
             exchange.getResponseBody().write(bytes);
