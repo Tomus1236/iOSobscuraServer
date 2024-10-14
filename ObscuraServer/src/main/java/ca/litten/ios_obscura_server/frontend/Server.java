@@ -243,6 +243,7 @@ public class Server {
         server.createContext("/sitemap").setHandler(exchange -> {
             StringBuilder out = new StringBuilder();
             Headers outgoingHeaders = exchange.getResponseHeaders();
+            out.append("https://").append(servername).append("/\n");
             outgoingHeaders.set("Content-Type", "text/plain");
             for (App app : AppList.searchApps("")) {
                 out.append("https://").append(servername).append("/getAppVersions/").append(app.getBundleID()).append("\n");
