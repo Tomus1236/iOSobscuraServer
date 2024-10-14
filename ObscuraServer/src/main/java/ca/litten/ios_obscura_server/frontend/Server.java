@@ -21,6 +21,7 @@ public class Server {
     private static long lastReload = 0;
     public static boolean allowReload = false;
     private static String servername = "localhost";
+    private static String donateURL = "";
     
     static {
         try {
@@ -57,6 +58,15 @@ public class Server {
                 servername = String.valueOf(buf).trim();
             } catch (FileNotFoundException e) {
                 System.err.println("Cannot find host.txt");
+            }
+            file = new File("donate.txt");
+            try {
+                FileReader host = new FileReader(file);
+                char[] buf = new char[Math.toIntExact(file.length())];
+                host.read(buf);
+                donateURL = String.valueOf(buf).trim();
+            } catch (FileNotFoundException e) {
+                System.err.println("Cannot find donate.txt");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -100,7 +110,10 @@ public class Server {
                     .append(app.getBundleID()).append("\"><center style=\"line-height:57px\">").append(cutStringTo(app.getName(), 15))
                         .append("</center></div></div></a>");
             }
-            out.append("</fieldset><fieldset><a href=\"https://github.com/CatsLover2006/iOSobscuraServer\"><div><div>Check out the Github!</div></div></a></fieldset></panel></body></html>");
+            out.append("</fieldset><fieldset><a href=\"https://github.com/CatsLover2006/iOSobscuraServer\"><div><div>Check out the Github!</div></div></a>");
+            if (!donateURL.isEmpty())
+                out.append("<a href=\"").append(donateURL).append("\"><div><div>Donate to this instance</div></div></a>");
+            out.append("</fieldset></panel></body></html>");
             byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
             exchange.sendResponseHeaders(200, bytes.length);
             exchange.getResponseBody().write(bytes);
