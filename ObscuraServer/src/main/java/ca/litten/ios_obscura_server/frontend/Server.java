@@ -87,7 +87,7 @@ public class Server {
             }
             StringBuilder out = new StringBuilder();
             out.append(Templates.generateBasicHeader("iOS Obscura Locator"))
-                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div><center><strong>iPhone OS Obscura Locator Homepage</strong></center></div></div><div><div><form action=\"searchPost\"><input type\"text\" name=\"search\" value=\"\" style=\"border-bottom:1px solid #999\" placeholder=\"Search\"><button style=\"float:right;background:none\" type=\"submit\"><img style=\"height:18px;border-radius:50%\" src=\"/searchIcon\"></button></form></div></div></fieldset><label>Some Apps</label><fieldset>");
+                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div><center><strong>iPhoneOS Obscura Locator Homepage</strong></center></div></div><div><div><form action=\"searchPost\"><input type\"text\" name=\"search\" value=\"\" style=\"border-bottom:1px solid #999\" placeholder=\"Search\"><button style=\"float:right;background:none\" type=\"submit\"><img style=\"height:18px;border-radius:50%\" src=\"/searchIcon\"></button></form></div></div></fieldset><label>Some Apps</label><fieldset>");
             List<App> apps = AppList.listAppsThatSupportVersion(iOS_ver);
             App app;
             int random;
@@ -271,7 +271,7 @@ public class Server {
                 query = "";
             }
             out.append(Templates.generateBasicHeader("Search: " + query))
-                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div><center><strong>Search iPhone OS Obscura</strong></center></div></div>")
+                    .append("<body class=\"pinstripe\"><panel><fieldset><div><div><center><strong>Search iPhoneOS Obscura</strong></center></div></div>")
                     .append("<div><div><form action=\"/searchPost\"><input type\"text\" name=\"search\" value=\"").append(query)
                     .append("\" style=\"border-bottom:1px solid #999\" placeholder=\"Search\"><button style=\"float:right;background:none\" type=\"submit\"><img style=\"height:18px;border-radius:50%\" src=\"/searchIcon\"></button></form></div></div><a href=\"javascript:history.back()\"><div><div>Go Back</div></div></a></fieldset>");
             if (!query.isEmpty()) {
