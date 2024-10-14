@@ -217,8 +217,11 @@ public class Server {
         });
         server.createContext("/getAppVersionLinks/").setHandler(exchange -> {
             StringBuilder out = new StringBuilder();
+            Headers incomingHeaders = exchange.getRequestHeaders();
             Headers outgoingHeaders = exchange.getResponseHeaders();
             outgoingHeaders.set("Content-Type", "text/html; charset=utf-8");
+            String userAgent = incomingHeaders.get("user-agent").get(0);
+            boolean iOS_connection = userAgent.contains("iPhone OS") || userAgent.contains("iPad");
             String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8.name()).split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null) {
@@ -243,9 +246,12 @@ public class Server {
                 if (versions[i].startsWith("https"))
                     out.append(", SSL");
                 out.append("</label><fieldset><a href=\"").append(versions[i])
-                        .append("\"><div><div>Direct Download</div></div></a><a href=\"itms-services://?action=download-manifest&url=https://")
-                        .append(servername).append("/generateInstallManifest/").append(splitURI[2]).append("/").append(splitURI[3]).append("/").append(i)
-                        .append("\"><div><div>iOS Direct Install <small style=\"font-size:x-small\">Might Not Work</small></div></div></a></fieldset>");
+                        .append("\"><div><div>Direct Download</div></div></a>");
+                if (iOS_connection)
+                    out.append("<a href=\"itms-services://?action=download-manifest&url=https://").append(servername)
+                            .append("/generateInstallManifest/").append(splitURI[2]).append("/").append(splitURI[3]).append("/").append(i)
+                            .append("\"><div><div>iOS Direct Install <small style=\"font-size:x-small\">Might Not Work</small></div></div></a>");
+                out.append("</fieldset>");
             }
             out.append("</panel></body></html>");
             byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
