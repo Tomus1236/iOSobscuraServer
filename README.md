@@ -6,3 +6,6 @@ Current archives:
 
 ## How to set up
 TODO
+
+## Current mirrors
+- https://iphoneosobscura.litten.ca
