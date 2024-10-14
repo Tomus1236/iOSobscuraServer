@@ -110,7 +110,7 @@ public class Server {
                     .append(app.getBundleID()).append("\"><center style=\"line-height:57px\">").append(cutStringTo(app.getName(), 15))
                         .append("</center></div></div></a>");
             }
-            out.append("</fieldset><fieldset><a href=\"https://github.com/CatsLover2006/iOSobscuraServer\"><div><div>Check out the Github!</div></div></a>");
+            out.append("</fieldset><fieldset><a href=\"https://github.com/CatsLover2006/iOSobscuraServer\"><div><div>Check out the Github</div></div></a>");
             if (!donateURL.isEmpty())
                 out.append("<a href=\"").append(donateURL).append("\"><div><div>Donate to this instance</div></div></a>");
             out.append("</fieldset></panel></body></html>");
