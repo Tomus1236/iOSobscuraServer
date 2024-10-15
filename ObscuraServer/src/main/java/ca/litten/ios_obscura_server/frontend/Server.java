@@ -246,7 +246,7 @@ public class Server {
                     out.append(", SSL");
                 out.append("</label><fieldset><a href=\"").append(versions[i])
                         .append("\"><div><div>Direct Download</div></div></a>");
-                if (userAgent.contains("iPhone OS") || userAgent.contains("iPad") || userAgent.contains("Macintosh") )
+                if (userAgent.contains("iPhone OS") || userAgent.contains("iPad") || userAgent.contains("Macintosh"))
                     out.append("<a href=\"itms-services://?action=download-manifest&url=https://").append(servername)
                             .append("/generateInstallManifest/").append(splitURI[2]).append("/").append(splitURI[3]).append("/").append(i)
                             .append("\"><div><div>iOS Direct Install <small style=\"font-size:x-small\">Might Not Work</small></div></div></a>");
