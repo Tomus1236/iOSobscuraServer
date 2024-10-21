@@ -24,7 +24,10 @@ public class Main {
         try {
             archive_urls = new URL[]{
                     new URL("https://archive.org/download/iOSObscura/iOSObscura_files.xml"),
-                    new URL("https://archive.org/download/jos-ipa-archive/jos-ipa-archive_files.xml")
+                    new URL("https://archive.org/download/jos-ipa-archive/jos-ipa-archive_files.xml"),
+                    new URL("https://archive.org/download/alyssas-ios-ipa-archive/alyssas-ios-ipa-archive_files.xml"),
+                    new URL("https://archive.org/download/iphone-IPA-1/iphone-IPA-1_files.xml"),
+                    new URL("https://archive.org/download/ios-ipa-collection/ios-ipa-collection_files.xml")
             };
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);

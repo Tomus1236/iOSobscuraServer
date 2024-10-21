@@ -2,6 +2,8 @@ package ca.litten.ios_obscura_server.frontend;
 
 import ca.litten.ios_obscura_server.backend.App;
 import ca.litten.ios_obscura_server.backend.AppList;
+import com.dd.plist.NSArray;
+import com.dd.plist.NSDictionary;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.spi.HttpServerProvider;
@@ -10,6 +12,7 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -190,7 +193,6 @@ public class Server {
         });
         server.createContext("/generateInstallManifest/").setHandler(exchange -> {
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            StringBuilder out = new StringBuilder();
             String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8.name()).split("/");
             App app = AppList.getAppByBundleID(splitURI[2]);
             if (app == null) {
@@ -202,15 +204,25 @@ public class Server {
             }
             outgoingHeaders.set("Content-Type", "text/xml");
             String[] versions = app.getUrlsForVersion(splitURI[3]);
-            out.append("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\">\n<dict><key>items</key><array><dict><key>assets</key><array><dict><key>kind</key><string>software-package</string><key>url</key><string>")
-                    .append(versions[Integer.parseInt(splitURI[4])])
-                    .append("</string></dict><dict><key>kind</key><string>display-image</string><key>needs-shine</key><false/><key>url</key><string>https://")
-                    .append(servername).append("/getAppIcon/").append(app.getBundleID())
-                    .append("</string></dict></array><key>metadata</key><dict><key>bundle-identifier</key><string>")
-                    .append(splitURI[2]).append("</string><key>bundle-version</key><string>")
-                    .append(splitURI[3]).append("</string><key>kind</key><string>software</string><key>title</key><string>")
-                    .append(app.getName()).append("</string></dict></dict></array></dict></plist>");
-            byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
+            NSDictionary root = new NSDictionary();
+            NSDictionary item = new NSDictionary();
+            NSDictionary[] asset = new NSDictionary[2];
+            NSDictionary metadata = new NSDictionary();
+            asset[0] = new NSDictionary();
+            asset[0].put("kind", "software-package");
+            asset[0].put("url", versions[Integer.parseInt(splitURI[4])]);
+            asset[1] = new NSDictionary();
+            asset[1].put("kind", "display-image");
+            asset[1].put("needs-shine", false);
+            asset[1].put("url", "https://" + servername + "/getAppIcon/" + app.getBundleID());
+            metadata.put("bundle-identifier", app.getBundleID());
+            metadata.put("bundle-version", splitURI[3]);
+            metadata.put("kind", "software");
+            metadata.put("title", app.getName());
+            item.put("assets", new NSArray(asset));
+            item.put("metadata", metadata);
+            root.put("items", new NSArray(new NSDictionary[] {item}));
+            byte[] bytes = root.toXMLPropertyList().getBytes(StandardCharsets.UTF_8);
             exchange.sendResponseHeaders(200, bytes.length);
             exchange.getResponseBody().write(bytes);
             exchange.close();
