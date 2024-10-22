@@ -44,6 +44,15 @@ public class Main {
                     new URL("https://archive.org/download/hot-donut-hd-v-1.3/hot-donut-hd-v-1.3_files.xml")
             };
             random_ipa_urls = new String[]{
+                // https://mtmdev.org/forum/index.php?threads/all-geometry-dash-ipas-in-existance-probably-idk.4290/
+                "https://files.catbox.moe/vpvw7b.ipa", // GD 1.0
+                "https://files.catbox.moe/e3ztj4.ipa", // GD 1.4
+                "https://files.catbox.moe/4t7jix.ipa", // GD 1.7
+                "https://files.catbox.moe/e5973l.ipa", // GD 1.8
+                "https://files.catbox.moe/cmkpko.ipa", // GD 1.9
+                "https://files.catbox.moe/bk69e2.ipa", // GD 2.0
+                "https://files.catbox.moe/8cburs.ipa", // GD 2.11
+                "https://files.catbox.moe/tglcyg.ipa"  // GD 2.10
             };
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
