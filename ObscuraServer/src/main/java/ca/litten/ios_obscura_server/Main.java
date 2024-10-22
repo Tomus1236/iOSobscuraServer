@@ -19,6 +19,7 @@ import static com.google.common.net.UrlEscapers.urlPathSegmentEscaper;
 
 public class Main {
     private static URL[] archive_urls;
+    private static String[] random_ipa_urls;
     
     static {
         try {
@@ -32,6 +33,9 @@ public class Main {
                     new URL("https://archive.org/download/ios-ipa-collection/ios-ipa-collection_files.xml"),
                     new URL("https://archive.org/download/hot-donut-hd-v-1.3/hot-donut-hd-v-1.3_files.xml")
             };
+            
+            random_ipa_urls = new String[]{
+            };
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -42,6 +46,7 @@ public class Main {
         public void run() {
             Escaper escaper = urlPathSegmentEscaper();
             LinkedList<String> urlist = new LinkedList<>();
+            urlist.addAll(Arrays.asList(random_ipa_urls));
             for (URL url : archive_urls) {
                 urlist.addAll(Arrays.asList(ArchiveListDecoder.getUrlListFromArchiveOrgListing(url)));
             }
