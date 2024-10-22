@@ -33,7 +33,6 @@ public class Main {
                     new URL("https://archive.org/download/ios-ipa-collection/ios-ipa-collection_files.xml"),
                     new URL("https://archive.org/download/hot-donut-hd-v-1.3/hot-donut-hd-v-1.3_files.xml")
             };
-            
             random_ipa_urls = new String[]{
             };
         } catch (MalformedURLException e) {
@@ -61,7 +60,7 @@ public class Main {
                     url += escaper.escape(frag) + "/";
                 }
                 url = url.substring(0, url.length() - 1);
-                if (url.contains("PossiblyBroken") || url.contains("Homebrew%20IPAs"))
+                if (url.contains("iOSObscura") && (url.contains("PossiblyBroken") || url.contains("Homebrew%20IPAs")))
                     continue;
                 boolean good;
                 while (true) {
