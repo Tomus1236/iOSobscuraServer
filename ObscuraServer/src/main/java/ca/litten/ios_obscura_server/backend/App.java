@@ -33,7 +33,8 @@ public class App {
         }
     }
     
-    private final String name;
+    private String name;
+    private boolean usesMetaName = false;
     private final String bundleID;
     private String earliestSupportedVersion = "99999999";
     
@@ -162,6 +163,18 @@ public class App {
         return true; // Earliest supported version
     }
     
+    public void usedMetaName() {
+        usesMetaName = true;
+    }
+    
+    public void updateName(String name) {
+        if (usesMetaName) {
+            return;
+        }
+        usesMetaName = true;
+        this.name = name;
+    }
+    
     public String[] getSupportedAppVersions(String version) {
         List<String> halfway = new ArrayList<>();
         for (Version appVer : versions) {
@@ -194,6 +207,7 @@ public class App {
         appJSON.put("artver", earliestArtVersion);
         appJSON.put("dev", developer);
         appJSON.put("devVer", earliestDevVersion);
+        appJSON.put("nN", usesMetaName);
         return appJSON;
     }
     

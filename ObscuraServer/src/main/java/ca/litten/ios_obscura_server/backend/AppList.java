@@ -37,6 +37,9 @@ public class AppList {
                 }
                 app.updateArtwork(appJSON.getString("artver"), appJSON.getString("art"));
                 app.updateDeveloper(appJSON.getString("devVer"), appJSON.getString("dev"));
+                if (appJSON.getBoolean("nN")) {
+                    app.usedMetaName();
+                }
                 app.sortVersions();
                 apps.add(app);
             }

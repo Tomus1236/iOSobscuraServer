@@ -34,7 +34,7 @@ public class AppListTest {
         String[] supportedVersions6 = app.getSupportedAppVersions("6.0");
         String[] supportedVersions7 = app.getSupportedAppVersions("7.0");
         assertFalse(Arrays.asList(supportedVersions511).contains("1.0"));
-        assertTrue(Arrays.asList(supportedVersions511).contains("1.0"));
+        assertTrue(Arrays.asList(supportedVersions511).contains("1.0.3"));
         assertArrayEquals(new String[]{"http://litten.ca/test.1.0.3.ipa",
                 "http://backup.litten.ca/test.1.0.3.ipa"}, app.getUrlsForVersion("1.0.3"));
         assertEquals(1, supportedVersions511.length);
