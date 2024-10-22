@@ -12,18 +12,21 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Server {
-    private HttpServer server;
+    private final HttpServer server;
     private static final HttpServerProvider provider = HttpServerProvider.provider();
-    private static Random rand = new Random();
-    private static byte[] searchIcon, favicon, mainicon, icon32, icon16;
+    private static final Random rand = new Random();
+    private static final byte[] searchIcon;
+    private static final byte[] favicon;
+    private static final byte[] mainicon;
+    private static final byte[] icon32;
+    private static final byte[] icon16;
     private static long lastReload = 0;
     public static boolean allowReload = false;
-    private static String servername = "localhost";
+    private static String serverName = "localhost";
     private static String donateURL = "";
     
     static {
@@ -58,7 +61,7 @@ public class Server {
                 FileReader host = new FileReader(file);
                 char[] buf = new char[Math.toIntExact(file.length())];
                 host.read(buf);
-                servername = String.valueOf(buf).trim();
+                serverName = String.valueOf(buf).trim();
             } catch (FileNotFoundException e) {
                 System.err.println("Cannot find host.txt");
             }
@@ -214,7 +217,7 @@ public class Server {
             asset[1] = new NSDictionary();
             asset[1].put("kind", "display-image");
             asset[1].put("needs-shine", false);
-            asset[1].put("url", "https://" + servername + "/getAppIcon/" + app.getBundleID());
+            asset[1].put("url", "https://" + serverName + "/getAppIcon/" + app.getBundleID());
             metadata.put("bundle-identifier", app.getBundleID());
             metadata.put("bundle-version", splitURI[3]);
             metadata.put("kind", "software");
@@ -259,7 +262,7 @@ public class Server {
                 out.append("</label><fieldset><a href=\"").append(versions[i])
                         .append("\"><div><div>Direct Download</div></div></a>");
                 if (userAgent.contains("iPhone OS") || userAgent.contains("iPad") || userAgent.contains("Macintosh"))
-                    out.append("<a href=\"itms-services://?action=download-manifest&url=https://").append(servername)
+                    out.append("<a href=\"itms-services://?action=download-manifest&url=https://").append(serverName)
                             .append("/generateInstallManifest/").append(splitURI[2]).append("/").append(splitURI[3]).append("/").append(i)
                             .append("\"><div><div>iOS Direct Install <small style=\"font-size:x-small\">Might Not Work</small></div></div></a>");
                 out.append("</fieldset>");
@@ -273,12 +276,12 @@ public class Server {
         server.createContext("/sitemap").setHandler(exchange -> {
             StringBuilder out = new StringBuilder();
             Headers outgoingHeaders = exchange.getResponseHeaders();
-            out.append("https://").append(servername).append("/\n");
+            out.append("https://").append(serverName).append("/\n");
             outgoingHeaders.set("Content-Type", "text/plain");
             for (App app : AppList.searchApps("")) {
-                out.append("https://").append(servername).append("/getAppVersions/").append(app.getBundleID()).append("\n");
+                out.append("https://").append(serverName).append("/getAppVersions/").append(app.getBundleID()).append("\n");
                 for (String version : app.getSupportedAppVersions("99999999"))
-                    out.append("https://").append(servername).append("/getAppVersionLinks/").append(app.getBundleID())
+                    out.append("https://").append(serverName).append("/getAppVersionLinks/").append(app.getBundleID())
                             .append("/").append(version).append("\n");
             }
             byte[] bytes = out.toString().getBytes(StandardCharsets.UTF_8);
