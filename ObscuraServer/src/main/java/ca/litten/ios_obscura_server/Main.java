@@ -25,9 +25,11 @@ public class Main {
             archive_urls = new URL[]{
                     new URL("https://archive.org/download/iOSObscura/iOSObscura_files.xml"),
                     new URL("https://archive.org/download/jos-ipa-archive/jos-ipa-archive_files.xml"),
+                    new URL("https://archive.org/download/apple-ios-logo-png-open-2000/apple-ios-logo-png-open-2000_files.xml"),
                     new URL("https://archive.org/download/alyssas-ios-ipa-archive/alyssas-ios-ipa-archive_files.xml"),
                     new URL("https://archive.org/download/iphone-IPA-1/iphone-IPA-1_files.xml"),
-                    new URL("https://archive.org/download/ios-ipa-collection/ios-ipa-collection_files.xml")
+                    new URL("https://archive.org/download/ios-ipa-collection/ios-ipa-collection_files.xml"),
+                    new URL("https://archive.org/download/hot-donut-hd-v-1.3/hot-donut-hd-v-1.3_files.xml")
             };
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
