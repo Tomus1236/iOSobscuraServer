@@ -154,7 +154,7 @@ public class Server {
                 outgoingHeaders.set("Location", app.getArtworkURL());
             }
             outgoingHeaders.set("Cache-Control", "max-age=172800");
-            exchange.sendResponseHeaders(308, 0);
+            exchange.sendResponseHeaders(302, 0);
             exchange.close();
         });
         server.createContext("/getAppVersions/").setHandler(exchange -> {
@@ -294,7 +294,7 @@ public class Server {
             String[] splitURI = URLDecoder.decode(exchange.getRequestURI().toString(), StandardCharsets.UTF_8.name()).split("\\?");
             outgoingHeaders.set("Location", "/search/" + splitURI[1].substring(7));
             outgoingHeaders.set("Cache-Control", "max-age=172800");
-            exchange.sendResponseHeaders(308, 0);
+            exchange.sendResponseHeaders(302, 0);
             exchange.close();
         });
         server.createContext("/search").setHandler(exchange -> {
