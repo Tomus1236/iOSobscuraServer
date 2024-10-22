@@ -23,6 +23,7 @@ public class Main {
     static {
         try {
             archive_urls = new URL[]{
+                    new URL("https://archive.org/download/mactracker-ipa-collection/mactracker-ipa-collection_files.xml"),
                     new URL("https://archive.org/download/iOSObscura/iOSObscura_files.xml"),
                     new URL("https://archive.org/download/jos-ipa-archive/jos-ipa-archive_files.xml"),
                     new URL("https://archive.org/download/apple-ios-logo-png-open-2000/apple-ios-logo-png-open-2000_files.xml"),
