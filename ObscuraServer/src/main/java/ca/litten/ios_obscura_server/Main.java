@@ -21,10 +21,20 @@ public class Main {
     private static URL[] archive_urls;
     private static String[] random_ipa_urls;
     
+    /* Sources:
+     *  - https://github.com/relikd/ipa-archive/blob/main/data/urls.json
+     */
     static {
         try {
             archive_urls = new URL[]{
                     new URL("https://archive.org/download/mactracker-ipa-collection/mactracker-ipa-collection_files.xml"),
+                    new URL("https://archive.org/download/apps-ios/apps-ios_files.xml"),
+                    new URL("https://archive.org/download/virtually-extinct-ipas/virtually-extinct-ipas_files.xml"),
+                    new URL("https://archive.org/download/ios_2_ipa/ios_2_ipa_files.xml"),
+                    new URL("https://archive.org/download/ios_2_ipa_p2/ios_2_ipa_p2_files.xml"),
+                    new URL("https://archive.org/download/ios_3_2_ipa/ios_3_2_ipa_files.xml"),
+                    new URL("https://archive.org/download/ios_3_ipa/ios_3_ipa_files.xml"),
+                    new URL("https://archive.org/download/ios_40_42_ipa/ios_40_42_ipa_files.xml"),
                     new URL("https://archive.org/download/iOSObscura/iOSObscura_files.xml"),
                     new URL("https://archive.org/download/jos-ipa-archive/jos-ipa-archive_files.xml"),
                     new URL("https://archive.org/download/apple-ios-logo-png-open-2000/apple-ios-logo-png-open-2000_files.xml"),
