@@ -113,24 +113,25 @@ public class Main {
             }
         }
         server.startServer();
-        if (Arrays.stream(args).noneMatch(a -> a.equals("--noParse"))) {
-            ArchiveParser archiveParser = new ArchiveParser();
-            archiveParser.start();
-            while (archiveParser.isAlive()) {
-                try {
-                    Thread.sleep(1000 * 60 * 2);
-                } catch (InterruptedException e) {
+        while (true) {
+            Server.allowReload = false;
+            if (Arrays.stream(args).noneMatch(a -> a.equals("--noParse"))) {
+                ArchiveParser archiveParser = new ArchiveParser();
+                archiveParser.start();
+                while (archiveParser.isAlive()) {
+                    try {
+                        Thread.sleep(1000 * 60 * 2);
+                    } catch (InterruptedException e) {
+                        System.out.println("Saving database...");
+                        AppList.saveAppDatabaseFile(new File("db.json"));
+                        break;
+                    }
                     System.out.println("Saving database...");
                     AppList.saveAppDatabaseFile(new File("db.json"));
-                    break;
                 }
-                System.out.println("Saving database...");
-                AppList.saveAppDatabaseFile(new File("db.json"));
+                System.out.println("Finished parsing!");
             }
-            System.out.println("Finished parsing!");
-        }
-        Server.allowReload = true;
-        while (true) {
+            Server.allowReload = true;
             try {
                 Thread.sleep(1000 * 60 * 60 * 24);
             } catch (InterruptedException e) {
