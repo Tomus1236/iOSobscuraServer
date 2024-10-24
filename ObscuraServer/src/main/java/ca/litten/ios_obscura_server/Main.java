@@ -62,8 +62,6 @@ public class Main {
                     url += escaper.escape(frag) + "/";
                 }
                 url = url.substring(0, url.length() - 1);
-                if (url.contains("iOSObscura") && (url.contains("PossiblyBroken") || url.contains("Homebrew%20IPAs")))
-                    continue;
                 boolean good;
                 while (true) {
                     try {
