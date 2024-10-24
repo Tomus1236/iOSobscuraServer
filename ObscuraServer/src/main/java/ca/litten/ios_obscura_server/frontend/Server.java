@@ -7,6 +7,8 @@ import com.dd.plist.NSDictionary;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.spi.HttpServerProvider;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -28,6 +30,7 @@ public class Server {
     public static boolean allowReload = false;
     private static String serverName = "localhost";
     private static String donateURL = "";
+    private static int port;
     
     static {
         try {
@@ -56,32 +59,28 @@ public class Server {
             icon32 = new byte[Math.toIntExact(file.length())];
             icon32f.read(icon32);
             icon32f.close();
-            file = new File("host.txt");
-            try {
-                FileReader host = new FileReader(file);
-                char[] buf = new char[Math.toIntExact(file.length())];
-                host.read(buf);
-                serverName = String.valueOf(buf).trim();
-            } catch (FileNotFoundException e) {
-                System.err.println("Cannot find host.txt");
+            file = new File("config.json");
+            FileReader reader = new FileReader(file);
+            StringBuilder out = new StringBuilder();
+            char[] buf = new char[4096];
+            int read;
+            while (reader.ready()) {
+                read = reader.read(buf);
+                for (int i = 0; i < read; i++)
+                    out.append(buf[i]);
             }
-            file = new File("donate.txt");
-            try {
-                FileReader host = new FileReader(file);
-                char[] buf = new char[Math.toIntExact(file.length())];
-                host.read(buf);
-                donateURL = String.valueOf(buf).trim();
-            } catch (FileNotFoundException e) {
-                System.err.println("Cannot find donate.txt");
-            }
+            JSONObject object = new JSONObject(out.toString());
+            serverName = object.getString("host");
+            donateURL = object.getString("donate_url");
+            port = object.getInt("port");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
     
-    public Server(InetSocketAddress address) throws IOException {
+    public Server() throws IOException {
         lastReload = System.currentTimeMillis();
-        server = provider.createHttpServer(address, -1);
+        server = provider.createHttpServer(new InetSocketAddress(port), -1);
         server.createContext("/").setHandler(exchange -> {
             Headers incomingHeaders = exchange.getRequestHeaders();
             Headers outgoingHeaders = exchange.getResponseHeaders();
