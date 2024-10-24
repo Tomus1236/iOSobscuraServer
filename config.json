@@ -1,0 +1,33 @@
+{
+    "host": "iphoneosobscura.litten.ca",
+    "donate_url": "",
+    "port": 12345,
+    "archive_org_archives": [
+        "mactracker-ipa-collection",
+        "apps-ios",
+        "virtually-extinct-ipas",
+        "ios_2_ipa",
+        "ios_2_ipa_p2",
+        "ios_3_2_ipa",
+        "ios_3_ipa",
+        "ios_40_42_ipa",
+        "iOSObscura",
+        "jos-ipa-archive",
+        "apple-ios-logo-png-open-2000",
+        "alyssas-ios-ipa-archive",
+        "iphone-IPA-1",
+        "ios-ipa-collection",
+        "hot-donut-hd-v-1.3",
+        "legacyiosapparchive"
+    ],
+    "network_files": [
+        "https://files.catbox.moe/vpvw7b.ipa",
+        "https://files.catbox.moe/e3ztj4.ipa",
+        "https://files.catbox.moe/4t7jix.ipa",
+        "https://files.catbox.moe/e5973l.ipa",
+        "https://files.catbox.moe/cmkpko.ipa",
+        "https://files.catbox.moe/bk69e2.ipa",
+        "https://files.catbox.moe/8cburs.ipa",
+        "https://files.catbox.moe/tglcyg.ipa"
+    ]
+}
