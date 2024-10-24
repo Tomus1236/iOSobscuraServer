@@ -41,7 +41,8 @@ public class Main {
                     new URL("https://archive.org/download/alyssas-ios-ipa-archive/alyssas-ios-ipa-archive_files.xml"),
                     new URL("https://archive.org/download/iphone-IPA-1/iphone-IPA-1_files.xml"),
                     new URL("https://archive.org/download/ios-ipa-collection/ios-ipa-collection_files.xml"),
-                    new URL("https://archive.org/download/hot-donut-hd-v-1.3/hot-donut-hd-v-1.3_files.xml")
+                    new URL("https://archive.org/download/hot-donut-hd-v-1.3/hot-donut-hd-v-1.3_files.xml"),
+                    new URL("https://archive.org/download/legacyiosapparchive/legacyiosapparchive_files.xml")
             };
             random_ipa_urls = new String[]{
                 // https://mtmdev.org/forum/index.php?threads/all-geometry-dash-ipas-in-existance-probably-idk.4290/
